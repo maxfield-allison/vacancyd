@@ -6,7 +6,7 @@
 
 [App website](https://vacancyd.com/) · [Documentation](https://docs.vacancyd.com/) · [Setup guide](docs/setup.md) · [Release verification](docs/releasing.md) · [Security](SECURITY.md)
 
-> **Release status:** source is available. Signed version 1.0.0 downloads and container images are being prepared; a source tag alone is not a published binary release.
+> **Release status:** source is available. Signed version 1.0.0 downloads and container images are being prepared; a source tag alone isn't a published binary release.
 
 Your workstation may be one of the most powerful computers in your homelab. It might have the best GPU you own. It's also the machine you use for games and everyday work, and for a good chunk of the day, much of that capacity sits unused.
 
@@ -20,13 +20,13 @@ The name comes from a motel's vacancy sign. **VACANCY** means there's room for a
 
 vacancyd checks owner activity, available resources and the requirements of the requested workload before letting it through. Configure measured model footprints and dependencies across GPU memory, system memory and CPU. Missing or stale required readings withhold new work. Supported integrations include Ollama, llama.cpp, ComfyUI, Chatterbox and the documented routes of OpenAI-compatible servers.
 
-By default, an upstream uses `owner_scope = "host"`, so owner presence can refuse its new work. Accepted work follows its configured cancel, drain or finish policy; the default drain window is 30 seconds. Closing a proxy connection does not prove that the upstream stopped computing or released memory. Automatic model unloading is a separate, adapter-specific option.
+By default, an upstream uses `owner_scope = "host"`, so owner presence can refuse its new work. Accepted work follows its configured cancel, drain or finish policy; the default drain window is 30 seconds. Closing a proxy connection doesn't prove that the upstream stopped computing or released memory. Automatic model unloading is a separate, adapter-specific option.
 
-An upstream set to `owner_scope = "resource"` can keep lending while the owner is present, subject to its resource checks. GPU pressure can reclaim affected work; memory and CPU capacity checks refuse new work but do not reclaim accepted work. Status and the console name exempt routes. Direct requests to the inference server bypass the gate, so keep its listener inaccessible to borrowers.
+An upstream set to `owner_scope = "resource"` can keep lending while the owner is present, subject to its resource checks. GPU pressure can reclaim affected work; memory and CPU capacity checks refuse new work but don't reclaim accepted work. Status and the console name exempt routes. Direct requests to the inference server bypass the gate, so keep its listener inaccessible to borrowers.
 
 ## The owner console
 
-See what is lending, what is withholding and why. The console brings resource readings, workload decisions, supported settings and diagnostics together, with a pause control when you need it.
+See what's lending, what's withholding and why. The console brings resource readings, workload decisions, supported settings and diagnostics together, with a pause control when you need it.
 
 ![The real vacancyd owner console showing resource checks and lending status with synthetic example data.](https://raw.githubusercontent.com/maxfield-allison/vacancyd/main/website/assets/console-overview.jpg)
 
