@@ -6,7 +6,7 @@
     <title>Vacancyd — Spare compute. On your terms.</title>
     <meta
       name="description"
-      content="Lend spare compute to local AI while keeping owner policy in control. Vacancyd checks presence, resources and workload policy before admitting borrowed work."
+      content="Keep your workstation. Let your homelab borrow its spare capacity for local AI, without turning it into a cluster node. You choose what can lend and when."
     />
     <link rel="canonical" href="https://vacancyd.com/" />
     <meta name="theme-color" content="#0b0f17" />
@@ -18,7 +18,7 @@
     />
     <meta
       property="og:description"
-      content="Your workstation has room for more. You still get first call."
+      content="Your workstation stays a workstation. Your homelab borrows its spare capacity for local AI. You choose what can lend and when."
     />
     <meta property="og:url" content="https://vacancyd.com/" />
     <meta
@@ -32,7 +32,7 @@
     />
     <meta
       name="twitter:description"
-      content="Owner-first resource lending for local compute. Windows and Linux. Apache-2.0."
+      content="Keep your workstation. Lend its spare capacity for local AI. Windows and Linux. Apache-2.0."
     />
     <meta
       name="twitter:image"
@@ -47,7 +47,7 @@
         "@type": "SoftwareApplication",
         "name": "Vacancyd",
         "url": "https://vacancyd.com/",
-        "description": "Owner-first resource lending for local compute.",
+        "description": "Keep your workstation. Let your homelab borrow its spare capacity for local AI under your rules.",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Windows, Linux",
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
@@ -82,12 +82,12 @@
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy wrap">
-          <p class="eyebrow">Owner-first compute lending</p>
+          <p class="eyebrow">Your workstation. More useful to your homelab.</p>
           <h1 id="hero-title">
             Spare compute.<br /><span>On your terms.</span>
           </h1>
           <p class="hero-description">
-            Your workstation has room for more.<br />You still get first call.
+            Keep your workstation.<br />Let your homelab borrow its spare capacity for local AI.
           </p>
           <div class="hero-actions">
             <a class="button" href="#get-vacancyd"
@@ -132,19 +132,29 @@
       >
         <p class="eyebrow">Built for the machine you already use</p>
         <h2 id="idea-title">
-          A workstation.<br /><span class="muted">With a little vacancy.</span>
+          Your best GPU.<br /><span class="muted">Still your workstation.</span>
         </h2>
         <div class="intro-bottom">
           <p class="large-copy">
-            Run a local model. Share an inference route. Put spare resources to
-            work when your machine can afford it.
+            Your workstation may be one of the most powerful computers in your
+            homelab. It's also where you work and play, with capacity sitting
+            unused for a good chunk of the day.
           </p>
           <p>
-            Vacancyd sits in front of your inference server. Before borrowed
-            work gets through, it checks owner policy, resource availability and
-            the rules for that workload. You choose what can lend, and when.
+            Making it a cluster node or virtualization host can mean getting your
+            desktop back through a thin client or GPU passthrough. Vacancyd gives
+            you a hybrid option: keep your operating system and everyday apps,
+            while other homelab applications borrow spare capacity through local
+            AI services. You choose what they can borrow and when.
           </p>
         </div>
+        <p class="intro-services">
+          Use it with Ollama, llama.cpp, ComfyUI, Chatterbox or the
+          <a href="https://docs.vacancyd.com/architecture/">documented routes</a>
+          of OpenAI-compatible servers. Vacancyd checks owner activity, available
+          resources and the requested workload before letting borrowed work through.
+          Your workstation doesn't have to join the cluster.
+        </p>
       </section>
 
       <section
@@ -155,9 +165,11 @@
         <div class="wrap">
           <div class="section-heading reveal">
             <p class="eyebrow">The sign says it all</p>
-            <h2 id="how-title">Room for work.<br />Until you need it.</h2>
+            <h2 id="how-title">Room for a<br />temporary resident.</h2>
             <p>
-              A normal refusal is the policy working. Try the two states below.
+              VACANCY means there's room for a new temporary resident: a borrowed
+              workload. NO VACANCY means the machine isn't accepting that work
+              under the current rules. Try the two states below.
             </p>
           </div>
           <div class="demo-panel reveal">
@@ -183,7 +195,7 @@
               ><span class="sign-vacancy">VACANCY</span>
             </div>
             <div class="demo-caption" aria-live="polite" aria-atomic="true">
-              <h3 id="demo-title">Room for borrowed work.</h3>
+              <h3 id="demo-title">Room for a temporary resident.</h3>
               <p id="demo-description">
                 This example route can accept work while its owner is away and
                 the resource checks pass.
@@ -200,6 +212,8 @@
               Interactive illustration, not live telemetry. Work already
               admitted follows your configured cancel, drain or finish policy.
               Resource-scoped routes can have different owner-presence rules.
+              A closed connection or an unload acknowledgement alone doesn't
+              prove that computation stopped or memory was recovered.
             </p>
           </div>
         </div>
@@ -238,9 +252,9 @@
             <span class="feature-number">02 / Capacity</span>
             <h3>Spare means spare.</h3>
             <p>
-              CPU, memory and GPU checks decide whether a configured route has
-              room. Unknown or stale required readings withhold new work rather
-              than guessing.
+              Measured model footprints and CPU, memory and GPU checks decide
+              whether a configured route has room. Unknown or stale required
+              readings withhold new work.
             </p>
             <div class="resource-art" aria-hidden="true">
               <span>CPU <i style="--fill: 38%"></i></span
@@ -253,9 +267,10 @@
             <span class="feature-number">03 / Policy</span>
             <h3>Set the terms.</h3>
             <p>
-              Choose the resources a workload needs, who may borrow them and
-              what happens to admitted work when policy changes. Pause lending
-              from the owner console.
+              Choose what can lend and when. A dedicated second GPU can keep
+              lending while you're at the keyboard, subject to its resource
+              checks. Set what happens to accepted work when permission changes:
+              cancel, allow a bounded time to finish, or let it complete.
             </p>
             <a href="https://docs.vacancyd.com/admission/"
               >Read the admission rules <span aria-hidden="true">↗</span></a
@@ -276,7 +291,8 @@
             <p>
               See what is lending, what is withholding and why. Inspect workload
               decisions, adjust supported settings and export diagnostics when
-              you need a closer look.
+              you need a closer look. Prometheus metrics let your other tools
+              observe availability; those tools still choose and route the work.
             </p>
           </div>
           <div class="console-detail reveal">
@@ -347,8 +363,9 @@
           <a href="https://docs.vacancyd.com/#platform-support"
             >platform support table</a
           >
-          before enabling lending. ARM64 is preview. macOS is not supported in
-          version 1.0.
+          before enabling lending. NVIDIA is the current GPU target. Windows has
+          the fuller desktop-activity and attributed GPU-pressure checks. Linux
+          ARM64 is preview. macOS is not supported in version 1.0.
         </p>
       </section>
 
@@ -386,8 +403,10 @@
             >
           </div>
           <p class="download-license">
-            Open source under Apache-2.0.<br />Built for a trusted network. Keep
-            your inference servers behind it.
+            Open source under Apache-2.0.<br />The daemon runs locally, without a
+            marketplace account, external control service or product telemetry.
+            Scoped tokens can restrict borrower access. Keep the underlying AI
+            services inaccessible to borrowers so they can't bypass the gate.
           </p>
         </div>
       </section>

@@ -1,16 +1,24 @@
 # vacancyd
 
-[![vacancyd — Spare compute. On your terms.](https://raw.githubusercontent.com/maxfield-allison/vacancyd/main/website/assets/social-card.png)](https://vacancyd.com/)
+[![vacancyd: Spare compute. On your terms. Keep your workstation. Lend its spare capacity for local AI.](https://raw.githubusercontent.com/maxfield-allison/vacancyd/main/website/assets/social-card.png)](https://vacancyd.com/)
 
-**Gate borrowed AI requests on owner policy and available resources.** Windows and Linux. Apache-2.0.
+**Keep your workstation. Let your homelab borrow its spare capacity for local AI.** Windows and Linux. Apache-2.0.
 
 [App website](https://vacancyd.com/) · [Documentation](https://docs.vacancyd.com/) · [Setup guide](docs/setup.md) · [Release verification](docs/releasing.md) · [Security](SECURITY.md)
 
 > **Release status:** source is available. Signed version 1.0.0 downloads and container images are being prepared; a source tag alone is not a published binary release.
 
-Your gaming PC has the best GPU in the house and sits idle most of the day. Your homelab wants that VRAM. The obvious move is to point the cluster at the box. That has an obvious failure mode: a 13 GiB model loads in the middle of a boss fight.
+Your workstation may be one of the most powerful computers in your homelab. It might have the best GPU you own. It's also the machine you use for games and everyday work, and for a good chunk of the day, much of that capacity sits unused.
 
-vacancyd is the motel sign for your hardware. Put it in front of a dedicated inference server and point borrowers at the gate. **VACANCY** means an upstream can admit new work; **NO VACANCY** means it refuses with HTTP 503, a reason and `Retry-After`. Gateway failover depends on the gateway's adapter and configuration.
+Putting it to work for the rest of the homelab can mean changing what that machine is. Turn it into a cluster node or virtualization host, and now you're figuring out how to get your desktop back through a thin client or GPU passthrough. The GPU can still end up tied to one environment. Keep the workstation separate, and your other machines may be struggling for capacity while it has room to spare.
+
+vacancyd gives you a hybrid option. Your workstation stays a workstation, running its own operating system and the applications you use. Other applications in your homelab can borrow its spare capacity for local AI work through services running on it. You choose what they can borrow and when. The workstation doesn't have to join the cluster, and you don't have to move your desktop into a virtual machine to make its GPU useful elsewhere.
+
+The name comes from a motel's vacancy sign. **VACANCY** means there's room for a new temporary resident: a borrowed workload. **NO VACANCY** means the machine isn't accepting that work under the current rules. Put vacancyd in front of a dedicated AI service and point borrowers at the gate. A refusal returns HTTP 503, a reason and `Retry-After`, which a borrower can use to wait or try another machine if configured to do so. Gateway failover depends on the gateway's adapter and configuration.
+
+## You set the house rules
+
+vacancyd checks owner activity, available resources and the requirements of the requested workload before letting it through. Configure measured model footprints and dependencies across GPU memory, system memory and CPU. Missing or stale required readings withhold new work. Supported integrations include Ollama, llama.cpp, ComfyUI, Chatterbox and the documented routes of OpenAI-compatible servers.
 
 By default, an upstream uses `owner_scope = "host"`, so owner presence can refuse its new work. Accepted work follows its configured cancel, drain or finish policy; the default drain window is 30 seconds. Closing a proxy connection does not prove that the upstream stopped computing or released memory. Automatic model unloading is a separate, adapter-specific option.
 

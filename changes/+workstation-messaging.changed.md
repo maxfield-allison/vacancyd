@@ -1,0 +1,1 @@
+The website and documentation explain how a workstation can keep its everyday role while homelab applications borrow spare capacity for local AI. The vacancy sign, supported services and lending policies are described together.

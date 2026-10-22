@@ -344,6 +344,13 @@ button {
   letter-spacing: -0.015em;
   color: #94a3b8;
 }
+.intro-services {
+  max-width: 80ch;
+  margin-top: 32px;
+  color: var(--slate);
+  font-size: 16px;
+  line-height: 1.7;
+}
 .demo-section {
   background: #ffffff;
   color: #151b27;
@@ -728,8 +735,9 @@ button {
   margin: 24px auto;
 }
 .download-license {
-  margin-top: 26px;
-  font-size: 11px;
+  max-width: 68ch;
+  margin: 26px auto 0;
+  font-size: 14px;
   line-height: 1.8;
   color: #94a3b8;
 }

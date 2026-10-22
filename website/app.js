@@ -8,7 +8,7 @@ for (const button of choices) {
     sign.dataset.vacancy = String(away);
     sign.setAttribute("aria-label", away ? "Vacancy" : "No vacancy");
     document.querySelector("#demo-title").textContent = away
-      ? "Room for borrowed work."
+      ? "Room for a temporary resident."
       : "Owner policy pauses new work.";
     document.querySelector("#demo-description").textContent = away
       ? "This example route can accept work while its owner is away and the resource checks pass."

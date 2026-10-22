@@ -1,6 +1,6 @@
 [project]
 site_name = "vacancyd"
-site_description = "Set up owner-first resource lending for your Windows or Linux machine."
+site_description = "Keep your workstation. Let your homelab borrow its spare capacity for local AI. Setup and house rules for Windows and Linux."
 site_author = "Maxfield Allison"
 site_url = "https://docs.vacancyd.com/"
 repo_url = "https://github.com/maxfield-allison/vacancyd"

@@ -16,7 +16,7 @@ REPOSITORY = "https://github.com/maxfield-allison/vacancyd"
 LINK = re.compile(r"(?P<start>!?\[[^\]\n]*\]\()(?P<url>[^\s)]+)(?P<end>\))")
 
 DESCRIPTIONS = {
-    "index.md": "Owner-first compute lending for Windows and Linux: capabilities, installation, security and platform support.",
+    "index.md": "Keep your workstation. Let your homelab borrow its spare capacity for local AI. Setup, house rules and platform support for Windows and Linux.",
     "setup.md": "Install and configure vacancyd, verify a protected configuration and activate resource lending.",
     "windows-service.md": "Install and manage the vacancyd Windows service, owner console and session agent.",
     "container.md": "Run vacancyd in a Linux container with explicit presence policy, GPU access and verified images.",

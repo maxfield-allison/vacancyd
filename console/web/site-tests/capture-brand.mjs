@@ -18,7 +18,7 @@ try {
   h1{font-size:94px;letter-spacing:-.06em;line-height:1.04;margin:52px 0 24px;font-weight:700}h1 span{color:#ffb454}
   p{font-size:24px;color:#94a3b8;margin:0;line-height:1.5}footer{position:absolute;bottom:54px;font-size:18px;color:#94a3b8;letter-spacing:.02em}
   </style><header><img alt="" src="data:image/svg+xml;base64,${mark}">vacancyd</header>
-  <h1>Spare compute.<br><span>On your terms.</span></h1><p>Owner-first resource lending for Windows and Linux.</p>
+  <h1>Spare compute.<br><span>On your terms.</span></h1><p>Keep your workstation. Lend its spare capacity for local AI.</p>
   <footer>vacancyd.com &nbsp; · &nbsp; Open source. Apache-2.0.</footer></html>`);
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: "../../website/assets/social-card.png" });

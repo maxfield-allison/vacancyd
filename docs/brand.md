@@ -10,7 +10,7 @@ Status: **console visual direction settled**. Its scope is dark surfaces, amber 
 
 The name is doing the work already, so the identity should follow it rather than invent something alongside it.
 
-**vacancyd is a vacancy sign.** The sign matches the interface: `/status` reports `vacancy: true|false` per upstream, and a refusal returns the error code `no_vacancy`. Use it to show the lending state.
+**vacancyd is a vacancy sign.** VACANCY means there's room for a new temporary resident: a borrowed workload. NO VACANCY means the machine isn't accepting that work under the current rules. The sign matches the interface: `/status` reports `vacancy: true|false` per upstream, and a refusal returns the error code `no_vacancy`. Use it to show the lending state.
 
 The sign stays lit. **VACANCY** is always illuminated; only **NO** switches on when borrowing is withheld. When borrowing is available, the unlit NO lettering remains in place. The sign's shape and position stay stable.
 
@@ -141,6 +141,10 @@ The owner console draws the vacancy sign the same way wherever it appears: Archi
 
 ## Voice
 
+Lead with the reason to use it: **keep your workstation, and let your homelab borrow its spare capacity for local AI.** The workstation can keep its operating system and everyday applications; it doesn't have to become a cluster node or virtualization host. The [README introduction](../README.md) is the full product explanation, also used as the documentation homepage.
+
+The short brand line remains **Spare compute. On your terms.** Pair it with the concrete workstation benefit, then explain the vacancy sign and the owner's house rules. Supported AI services define the lending scope; this is not a promise to run arbitrary cluster jobs. A resource can keep lending while the owner is present if its policy permits, so avoid describing all lending as idle-only.
+
 Keep the documentation direct and technically specific. Explain limitations alongside the behavior they qualify.
 
 **State the honest limitation next to the claim.** Admission and upstream cancellation are different checks. A closed proxy connection does not prove that the upstream stopped computing. See [admission and recovery](admission.md#owner-return).
@@ -153,9 +157,9 @@ Avoid: "effortlessly", "seamlessly", "blazingly fast", "just works". The project
 
 ## Current assets and future applications
 
-The repository ships the four SVG marks under `docs/assets/brand/`, the Windows icon under `console/icons/`, and the console's embedded Archivo and IBM Plex Mono fonts with their licenses. Public documentation is Markdown in this repository. A hosted documentation site, horizontal and stacked lockups, favicon set, and a 1200 × 630 social card are future applications, not shipped product features.
+The repository ships four SVG marks under `docs/assets/brand/`, the Windows icon under `console/icons/`, and the console's embedded Archivo and IBM Plex Mono fonts with their licenses. The app website is [vacancyd.com](https://vacancyd.com/); native Zensical documentation is [docs.vacancyd.com](https://docs.vacancyd.com/), built from this repository's Markdown. Website assets include console screenshots rendered with example data, the SVG favicon, and a 1200 × 630 social card. Their source and provenance live under `website/assets/` and `console/web/site-tests/`. Horizontal and stacked lockups and a broader favicon set remain future applications.
 
-Any new artwork should follow these tokens and sign geometry and be reviewed before use. A missing social card does not authorize a new asset or a claim that a hosted site exists.
+Any new artwork should follow these tokens and sign geometry and be reviewed before use. Keep release availability separate from the product description: source, installers and container images have distinct publication states.
 
 ### Deliberately not copying dnsweaver
 
