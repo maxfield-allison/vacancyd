@@ -1,0 +1,10 @@
+{
+  "identifier": "owner-controls",
+  "description": "Change explicit global or per-resource lending switches on the fixed local daemon.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "allow-set-lending"
+  ]
+}

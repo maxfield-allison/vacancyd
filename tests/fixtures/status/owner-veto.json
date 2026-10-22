@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "daemon": {
+    "name": "vacancyd",
+    "version": "0.1.0"
+  },
+  "ready": true,
+  "readiness_failures": [],
+  "lending_enabled": true,
+  "owner_veto": {
+    "active": true,
+    "cause": "owner active"
+  },
+  "presence": {
+    "session": "active",
+    "session_authority": "missing",
+    "foreground": null,
+    "owner_app": null,
+    "idle_seconds": null,
+    "media": "idle"
+  },
+  "presence_backend": "windows",
+  "agent": null,
+  "agent_channel": {
+    "state": "listening",
+    "protocol_version": 1,
+    "report_ttl_s": 15,
+    "active_connections": 0,
+    "connection_limit": 32,
+    "last_rejection": null
+  },
+  "session_authority": {
+    "state": "missing",
+    "policy": "all_active_sessions",
+    "applicable_count": 0,
+    "usable_count": 0,
+    "sessions": []
+  },
+  "resources": [
+    {
+      "id": "gpu0",
+      "kind": "nvidia-gpu",
+      "probe": "nvidia-smi",
+      "label": "Example GPU",
+      "enabled": true,
+      "lendable": true,
+      "free_mib": 12000,
+      "total_mib": 16000,
+      "utilization_pct": 0,
+      "capacity": {
+        "quality": "ready",
+        "age_s": 1,
+        "last_error": null
+      },
+      "pressure": {
+        "quality": "ready",
+        "age_s": 1,
+        "last_error": null,
+        "non_lender_pct": 2.0,
+        "engaged": false,
+        "threshold_pct": 25.0,
+        "baseline_pct": 2.0,
+        "mode": "calibrated",
+        "calibrated": true,
+        "calibration_samples": 60,
+        "calibration_required": 60,
+        "calibration_hint": null,
+        "above_for_s": 0
+      },
+      "adapter_mapping": {
+        "quality": "ready",
+        "age_s": 1,
+        "last_error": null,
+        "pci": "0000:01:00.0",
+        "luid": "example",
+        "source": "probe"
+      }
+    }
+  ],
+  "upstreams": [
+    {
+      "id": "inference",
+      "adapter": "ollama",
+      "can_unload": true,
+      "per_model_gating": true,
+      "listen": "127.0.0.1:11435",
+      "target": "http://127.0.0.1:11434",
+      "resource": "gpu0",
+      "vacancy": false,
+      "refusal": {
+        "reason": "owner_active",
+        "detail": "owner active",
+        "retry_after_s": 30
+      }
+    }
+  ],
+  "uptime_s": 120
+}

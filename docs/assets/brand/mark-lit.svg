@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="vacancyd">
+<title>vacancyd</title>
+  <!-- A dark sign hung from a bar. Only the lettering is lit, as on a motel
+       sign: the plate and its fixture stay dark metal. The frame lets the
+       plate's edge read on a night ground. -->
+  <g id="rail" stroke="#55637A" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M6 6h52"/>
+    <path d="M16 7v6M48 7v6"/>
+  </g>
+  <rect x="8" y="14" width="48" height="42" rx="7" fill="#0B0F17"
+        stroke="#55637A" stroke-width="3"/>
+  <path d="M22 26 32 44 42 26" fill="none" stroke="#FFB454" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-lending"
+description = "Enables the set_lending command without any pre-configured scope."
+commands.allow = ["set_lending"]
+
+[[permission]]
+identifier = "deny-set-lending"
+description = "Denies the set_lending command without any pre-configured scope."
+commands.deny = ["set_lending"]

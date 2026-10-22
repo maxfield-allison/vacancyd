@@ -1,0 +1,226 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Package Name="vacancyd"
+           Manufacturer="probablyfine"
+           Version="$(var.PackageVersion)"
+           UpgradeCode="3A695AD2-14B6-4C5A-AE05-01EE5A553F0A"
+           Scope="perMachine"
+           InstallerVersion="500">
+    <SummaryInformation Description="Gate borrowed AI requests on owner policy and available resources" />
+    <!-- Retain shared components, especially the SCM service, throughout the
+         transaction. Early removal recreates a service without its extended
+         recovery settings on rollback. Stable component GUID/key paths are
+         required by this schedule; removal still precedes transaction commit. -->
+    <!-- A rebuild with the same version (a signed build of an unsigned
+         candidate) gets a new ProductCode. Without same-version upgrades,
+         Windows Installer would install it beside the old product, leaving
+         two entries sharing reference-counted components. With them, the
+         old product is detected (WIX_UPGRADE_DETECTED) and removed like any
+         older version. Reinstalling the identical package is maintenance,
+         not an upgrade. Windows Installer reports this as ICE61, a warning.
+         Each executable carries the Cargo package version in its Windows
+         version resource. This also prevents a rollback-restored executable
+         from being treated as modified unversioned user data. The default
+         file rule keeps an installed file of equal version. "e"
+         overwrites only equal or older versions, so it never downgrades a
+         newer file, and this package installs only its own files. -->
+    <MajorUpgrade Schedule="afterInstallExecute"
+                  AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of vacancyd is already installed." />
+    <Property Id="REINSTALLMODE" Value="emus" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="ARPNOREPAIR" Value="1" />
+    <!-- Generate ordinary shortcuts from the owned feature/file targets.
+         Advertised activation checks the protected config key path as the
+         interactive user and incorrectly requests elevated repair at logon. -->
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/maxfield-allison/vacancyd" />
+
+    <!-- The MSI 5 service-config table is unreliable (WIX1149). Set only the
+         missing reported-error flag through SCM after fresh service creation.
+         Upgrades and repair preserve the existing policy, including operator
+         changes. No existing service setting needs lossy rollback capture. -->
+    <CustomAction Id="SetReportedFailureRecovery"
+                  Property="ReportedFailureRecovery"
+                  Value="&quot;[System64Folder]sc.exe&quot; failureflag vacancyd 1" />
+    <CustomAction Id="ReportedFailureRecovery"
+                  BinaryRef="Wix4UtilCA_X64" DllEntry="WixQuietExec"
+                  Execute="deferred" Impersonate="no" Return="check" />
+    <!-- Runs after files exist and before service start, including upgrades.
+         Tightening permissions never replaces operator configuration bytes.
+         NeverOverwrite keeps a configuration that already exists, so the
+         installer refuses to adopt one not owned by Administrators or
+         LocalSystem: an ordinary user could have planted it in ProgramData. -->
+    <CustomAction Id="SetProtectConfiguration" Property="ProtectConfiguration"
+                  Value="&quot;[#VacancydExe]&quot; protect-config --config &quot;[CommonAppDataVacancyd]vacancyd.toml&quot; --require-admin-owner" />
+    <CustomAction Id="ProtectConfiguration" BinaryRef="Wix4UtilCA_X64" DllEntry="WixQuietExec"
+                  Execute="deferred" Impersonate="no" Return="check" />
+    <InstallExecuteSequence>
+      <!-- Override the extension's virtual scheduling row: neither recovery
+           action may overwrite an existing service during upgrade or repair. -->
+      <Custom Action="override Wix4SchedServiceConfig_X64" After="InstallServices"
+              Condition="NOT Installed AND NOT WIX_UPGRADE_DETECTED AND $ServiceExecutable = 3" />
+      <Custom Action="SetProtectConfiguration" After="InstallFiles"
+              Condition="NOT Installed AND $ServiceExecutable = 3" />
+      <Custom Action="ProtectConfiguration" After="SetProtectConfiguration"
+              Condition="NOT Installed AND $ServiceExecutable = 3" />
+      <Custom Action="SetReportedFailureRecovery" After="InstallServices"
+              Condition="NOT Installed AND NOT WIX_UPGRADE_DETECTED AND $ServiceExecutable = 3" />
+      <Custom Action="ReportedFailureRecovery" After="SetReportedFailureRecovery"
+              Condition="NOT Installed AND NOT WIX_UPGRADE_DETECTED AND $ServiceExecutable = 3" />
+      <!-- Restart Manager can leave reporters in other user sessions alive,
+           even after replacing their files. Complete upgrades and removals
+           through an explicit reboot; /norestart returns 3010 to the caller.
+           Do not request it from nested old-product removal or failed installs. -->
+      <ScheduleReboot After="InstallFinalize"
+                      Condition="(WIX_UPGRADE_DETECTED AND NOT Installed) OR (REMOVE = &quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE)" />
+    </InstallExecuteSequence>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="ProgramFilesVacancyd" Name="vacancyd">
+        <Component Id="ServiceExecutable" Guid="DCC41E95-7BCE-47A2-AB98-EF00B5549440">
+          <File Id="VacancydExe"
+                Source="$(var.BinaryPath)"
+                Name="vacancyd.exe"
+                KeyPath="yes">
+            <Shortcut Id="SetupShortcut" Directory="VacancydStartMenu"
+                      Name="Setup (run as administrator)" Advertise="yes"
+                      Arguments="--pause setup --config &quot;[CommonAppDataFolder]vacancyd\vacancyd.toml&quot; --replace-starter"
+                      WorkingDirectory="ProgramFilesVacancyd" />
+          </File>
+          <RemoveFolder Id="RemoveStartMenuDirectory" Directory="VacancydStartMenu" On="uninstall" />
+          <ServiceInstall Id="VacancydServiceInstall"
+                          Name="vacancyd"
+                          DisplayName="vacancyd"
+                          Description="Gate borrowed AI requests on owner policy and available resources"
+                          Type="ownProcess"
+                          Start="auto"
+                          ErrorControl="normal"
+                          Account="LocalSystem"
+                          Arguments="service --config &quot;[CommonAppDataFolder]vacancyd\vacancyd.toml&quot; --log-file &quot;[CommonAppDataFolder]vacancyd\vacancyd.log&quot;">
+            <!-- Utility custom actions own the failure-action array. -->
+            <util:ServiceConfig FirstFailureActionType="restart"
+                                SecondFailureActionType="restart"
+                                ThirdFailureActionType="none"
+                                RestartServiceDelayInSeconds="5"
+                                ResetPeriodInDays="1" />
+          </ServiceInstall>
+          <ServiceControl Id="VacancydServiceControl"
+                          Name="vacancyd"
+                          Start="install"
+                          Stop="both"
+                          Remove="uninstall"
+                          Wait="yes" />
+        </Component>
+
+        <Component Id="ProgramDocumentation" Guid="FDECB80D-101E-492B-A66D-B1645B55CC6D">
+          <File Id="Readme" Source="$(var.RepositoryRoot)\README.md" KeyPath="yes" />
+          <File Id="Changelog" Source="$(var.RepositoryRoot)\CHANGELOG.md" />
+          <File Id="SecurityPolicy" Source="$(var.RepositoryRoot)\SECURITY.md" />
+          <File Id="ExampleConfig" Source="$(var.RepositoryRoot)\vacancyd.example.toml" />
+          <File Id="LicenseApache" Source="$(var.RepositoryRoot)\LICENSE-APACHE" />
+          <File Id="ProjectNotice" Source="$(var.RepositoryRoot)\NOTICE" />
+          <File Id="ThirdPartyLicenses" Source="$(var.RepositoryRoot)\THIRD_PARTY_LICENSES" />
+          <File Id="DependencySbom" Source="$(var.RepositoryRoot)\SBOM.cdx.json" />
+          <File Id="ThirdPartySources" Source="$(var.RepositoryRoot)\THIRD_PARTY_SOURCES.tar.gz" />
+        </Component>
+
+        <Component Id="SessionAgentExecutable" Guid="BD2948A6-D3F4-4C09-B6D4-57C35AA70EF2">
+          <File Id="SessionAgentExe" Source="$(var.SessionBinaryPath)" Name="vacancyd-session.exe" KeyPath="yes">
+            <!-- ALLUSERS=1 resolves StartupFolder for all users. The property
+                 above converts these feature targets to regular shortcuts. -->
+            <Shortcut Id="SessionAgentStartup" Directory="StartupFolder"
+                      Name="vacancyd session agent" Advertise="yes"
+                      WorkingDirectory="ProgramFilesVacancyd" />
+            <Shortcut Id="SessionAgentShortcut" Directory="VacancydStartMenu"
+                      Name="Start session agent" Advertise="yes"
+                      WorkingDirectory="ProgramFilesVacancyd" />
+          </File>
+        </Component>
+
+        <Component Id="OwnerConsoleExecutable" Guid="C36C6DE1-D4A9-4D19-9FAF-0C81481DAD1E">
+          <File Id="OwnerConsoleExe" Source="$(var.ConsoleBinaryPath)" Name="vacancyd-console.exe" KeyPath="yes">
+            <Shortcut Id="OwnerConsoleStartup" Directory="StartupFolder" Name="vacancyd owner controls" Advertise="yes" Arguments="--tray" WorkingDirectory="ProgramFilesVacancyd" />
+            <Shortcut Id="OwnerConsoleShortcut" Directory="VacancydStartMenu"
+                      Name="vacancyd owner console" Advertise="yes"
+                      WorkingDirectory="ProgramFilesVacancyd" />
+          </File>
+        </Component>
+
+        <Directory Id="ProgramFilesDocs" Name="docs">
+          <Component Id="DocumentationFiles" Guid="1F156402-3A2D-4CB6-BB64-1237CC1379F9">
+            <File Id="ConsoleControlsDoc" Source="$(var.RepositoryRoot)\docs\console-controls.md" />
+            <File Id="ConsoleSettingsDoc" Source="$(var.RepositoryRoot)\docs\console-settings.md" />
+            <File Id="AdmissionDoc" Source="$(var.RepositoryRoot)\docs\admission.md" KeyPath="yes" />
+            <File Id="ArchitectureDoc" Source="$(var.RepositoryRoot)\docs\architecture.md" />
+            <File Id="AuthenticationDoc" Source="$(var.RepositoryRoot)\docs\authentication.md" />
+            <File Id="CalibrationDoc" Source="$(var.RepositoryRoot)\docs\calibration.md" />
+            <File Id="CompatibilityDoc" Source="$(var.RepositoryRoot)\docs\compatibility.md" />
+            <File Id="ConsoleDoc" Source="$(var.RepositoryRoot)\docs\console.md" />
+            <File Id="ContainerDoc" Source="$(var.RepositoryRoot)\docs\container.md" />
+            <File Id="DependencyPolicyDoc" Source="$(var.RepositoryRoot)\docs\dependency-policy.md" />
+            <File Id="DiagnosticsDoc" Source="$(var.RepositoryRoot)\docs\diagnostics.md" />
+            <File Id="GpuTelemetryMetricsDoc" Source="$(var.RepositoryRoot)\docs\gpu-telemetry-metrics.md" />
+            <File Id="SetupDoc" Source="$(var.RepositoryRoot)\docs\setup.md" />
+            <File Id="AgentStartupDoc" Source="$(var.RepositoryRoot)\docs\agent-startup.md" />
+            <File Id="BrandDoc" Source="$(var.RepositoryRoot)\docs\brand.md" />
+            <File Id="LiteLlmInteropDoc" Source="$(var.RepositoryRoot)\docs\litellm-503-interop.md" />
+            <File Id="PriorArtDoc" Source="$(var.RepositoryRoot)\docs\prior-art.md" />
+            <File Id="ReleasingDoc" Source="$(var.RepositoryRoot)\docs\releasing.md" />
+            <File Id="SplitAgentDoc" Source="$(var.RepositoryRoot)\docs\split-agent.md" />
+            <File Id="TiersDoc" Source="$(var.RepositoryRoot)\docs\tiers.md" />
+            <File Id="WindowsServiceDoc" Source="$(var.RepositoryRoot)\docs\windows-service.md" />
+          </Component>
+          <Directory Id="ProgramFilesAssets" Name="assets">
+            <Directory Id="ProgramFilesBrandAssets" Name="brand">
+              <Component Id="BrandAssets" Guid="45DBA223-D9B5-4E14-B7D3-4E9D4997A1C8">
+                <File Id="BrandMarkIdle" Source="$(var.RepositoryRoot)\docs\assets\brand\mark-idle.svg" KeyPath="yes" />
+                <File Id="BrandMarkLitDeep" Source="$(var.RepositoryRoot)\docs\assets\brand\mark-lit-deep.svg" />
+                <File Id="BrandMarkLit" Source="$(var.RepositoryRoot)\docs\assets\brand\mark-lit.svg" />
+                <File Id="BrandMarkMono" Source="$(var.RepositoryRoot)\docs\assets\brand\mark-mono.svg" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="VacancydStartMenu" Name="vacancyd" />
+    </StandardDirectory>
+    <StandardDirectory Id="StartupFolder" />
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="CommonAppDataVacancyd" Name="vacancyd">
+        <Component Id="ProtectedDataDirectory" Guid="CFAAF5D8-74B4-485E-AC58-EBA769D6949C" Permanent="yes">
+          <CreateFolder>
+            <PermissionEx Sddl="O:BAD:P(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)" />
+          </CreateFolder>
+        </Component>
+        <Component Id="StarterConfig"
+                   Guid="50A6F90B-E356-4F35-82C7-C585DB63E28D"
+                   Permanent="yes"
+                   NeverOverwrite="yes">
+          <File Id="InstalledConfig"
+                Source="$(var.RepositoryRoot)\packaging\vacancyd.starter.toml"
+                Name="vacancyd.toml"
+                KeyPath="yes">
+            <PermissionEx Sddl="O:BAD:P(A;;FA;;;SY)(A;;FA;;;BA)" />
+          </File>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="Complete" Title="vacancyd" Level="1">
+      <ComponentRef Id="ServiceExecutable" />
+      <ComponentRef Id="SessionAgentExecutable" />
+      <ComponentRef Id="OwnerConsoleExecutable" />
+      <ComponentRef Id="ProgramDocumentation" />
+      <ComponentRef Id="DocumentationFiles" />
+      <ComponentRef Id="BrandAssets" />
+      <ComponentRef Id="StarterConfig" />
+      <ComponentRef Id="ProtectedDataDirectory" />
+    </Feature>
+  </Package>
+</Wix>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vacancyd owner console</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="main.js"></script>
+</head>
+<body>
+  <a class="skip" href="#overview">Skip to machine status</a>
+  <header class="app-header">
+    <a class="wordmark" href="#overview"><img src="assets/mark-lit.svg" alt="" width="34" height="34">vacancyd</a>
+    <span class="local-label">LOCAL MACHINE <span aria-hidden="true">/</span> OWNER CONSOLE</span>
+    <button id="lending-control" class="primary" disabled>Reading lending state…</button>
+  </header>
+  <div class="workspace">
+    <nav aria-label="Dashboard sections">
+      <span class="nav-caption">YOUR MACHINE</span>
+      <a href="#overview" aria-current="page">Overview</a>
+      <a href="#hardware">Hardware</a>
+      <a href="#workloads">Workloads</a>
+      <a href="#installation">Installation</a>
+      <a href="#settings">Settings</a>
+      <p class="nav-note">Your machine first.<br>Spare capacity, shared.</p>
+    </nav>
+    <main id="content">
+      <section id="overview" tabindex="-1" aria-labelledby="overview-title">
+        <div class="section-heading"><div><p class="eyebrow">AT A GLANCE</p><h1 id="overview-title">Machine overview</h1></div><span id="freshness" class="muted">Connecting…</span></div>
+        <div id="decision" class="decision" data-tone="withheld">
+          <img id="sign" src="assets/mark-idle.svg" alt="" width="90" height="90">
+          <div><p class="eyebrow">CLUSTER BORROWING</p><h2 id="decision-title">Reading machine status</h2><p id="decision-detail">Waiting for the local service. Lending state is not yet known.</p></div>
+          <span id="decision-label" class="pill">CONNECTING</span>
+        </div>
+        <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+        <div id="protection" class="protection-grid" aria-label="Owner protection"></div>
+        <p id="veto-exemptions" class="hint veto-exemptions" hidden></p>
+      <p class="hint overview-hint">Use Hardware to choose which resources may be shared, Workloads to inspect borrowing, and Installation to check the service and session reporter.</p></section>
+      <section hidden tabindex="-1" id="hardware" aria-labelledby="hardware-title"><div class="section-heading"><h2 id="hardware-title">Hardware</h2><span class="muted">Current observations</span></div><div id="resources" class="resource-grid"><p class="empty">No current hardware readings.</p></div></section>
+      <section hidden tabindex="-1" id="workloads" aria-labelledby="workloads-title"><div class="section-heading"><h2 id="workloads-title">Workloads</h2><span class="muted">Borrowing routes</span></div><div id="upstreams" class="upstream-grid"><p class="empty">No current workload state.</p></div></section>
+      <section hidden tabindex="-1" id="installation" aria-labelledby="installation-title"><div class="section-heading"><h2 id="installation-title">Installation</h2><span class="muted">Service &amp; session reporting</span></div><div id="health" class="health-panel"><p class="empty">Waiting for installation status.</p></div>
+        <div class="diagnostics-panel" role="group" aria-labelledby="diagnostics-title">
+          <h3 id="diagnostics-title">Troubleshooting</h3>
+          <p id="logging-state" class="muted">Reading the log level…</p>
+          <div class="diagnostics-buttons">
+            <button id="debug-control" type="button" data-enabled="true" disabled aria-describedby="debug-hint">Debug logging for 30 minutes</button>
+            <button id="export-diagnostics" type="button" disabled aria-describedby="export-hint">Export diagnostics</button>
+          </div>
+          <p id="debug-hint" class="hint">The temporary debug window asks the service to log GPU pressure decisions. When it ends, logging returns to the configured or environment filter. A service restart also ends the window. Opening or ending it asks for administrator approval.</p>
+          <p id="export-hint" class="hint">The export saves current status, settings without credentials, the log level, the last few hours of pressure readings and the names of the programs using each GPU most. Choose where to save it, and read it before sharing.</p>
+          <p id="diagnostics-result" role="status" aria-live="polite"></p>
+        </div></section>
+      <section hidden tabindex="-1" id="settings" aria-labelledby="settings-title">
+        <div class="section-heading"><div><p class="eyebrow">LENDING POLICY</p><h2 id="settings-title">Settings</h2></div><span class="muted">Capacity live; other policy after restart</span></div>
+        <p class="settings-intro">Choose the owner protections and resources that vacancyd should use by default. Runtime Pause, Resume, and Hardware controls remain separate.</p>
+        <p id="settings-state" class="settings-state" role="status" aria-live="polite">Open Settings to read the protected configuration.</p>
+        <button id="settings-retry" type="button" hidden>Retry</button>
+        <p id="settings-restart-pending" class="hint" hidden>Saved settings are waiting for a service restart. Open Services (services.msc), select vacancyd, and choose Restart.</p>
+        <form id="settings-form" hidden>
+          <div class="settings-navigation" data-settings-navigation>
+            <label for="settings-search">Search settings</label>
+            <input id="settings-search" type="search" placeholder="Find a setting, resource, or workload" aria-describedby="settings-search-status" autocomplete="off">
+            <p id="settings-search-status" class="hint" role="status" aria-live="polite"></p>
+            <ul id="settings-search-results" class="settings-search-results" hidden></ul>
+            <div id="settings-tabs" class="settings-tabs" role="tablist" aria-label="Settings categories"></div>
+          </div>
+          <div class="settings-grid">
+            <fieldset class="settings-card" data-settings-category="owner">
+              <legend>Owner presence</legend>
+              <div class="settings-grid"><div class="settings-policy-group">
+              <label class="check-row"><input id="setting-unlocked-presence" type="checkbox"> Treat an unlocked Windows session as owner presence</label>
+              <label for="setting-idle-seconds">Idle time before an unlocked session may lend</label>
+              <div class="number-with-unit"><input id="setting-idle-seconds" type="number" min="0" max="604800" step="1" required aria-describedby="setting-idle-seconds-unit setting-idle-seconds-hint"><span id="setting-idle-seconds-unit">seconds</span></div>
+              <p id="setting-idle-seconds-hint" class="hint">With unlocked-session protection enabled, a positive idle time may release it. Use 0 to disable that idle exception.</p>
+              </div><div class="settings-policy-group">
+              <label class="check-row"><input id="setting-media-presence" type="checkbox"> Treat media playback as owner activity</label>
+              <label for="setting-release-seconds">Owner return hold time</label>
+              <div class="number-with-unit"><input id="setting-release-seconds" type="number" min="0" max="86400" step="1" required aria-describedby="setting-release-seconds-unit"><span id="setting-release-seconds-unit">seconds</span></div>
+              </div></div>
+            </fieldset>
+            <fieldset class="settings-card" data-settings-category="hardware">
+              <legend>Shared by default</legend>
+              <p class="hint settings-first-hint">These defaults return after a service restart. Hardware controls change only the running service.</p>
+              <div id="settings-resources" class="settings-list"></div>
+            </fieldset>
+          </div>
+          <details id="settings-advanced" class="advanced-settings">
+            <summary>Advanced settings</summary>
+            <p class="hint">These controls change detection and reclaim policy. Credentials, network listeners, paths, hardware identity, and estimator internals are intentionally excluded.</p>
+            <div class="settings-grid advanced-grid">
+              <fieldset class="settings-card" data-settings-category="owner">
+                <legend>Named activity</legend>
+                <label for="setting-processes">Processes that reserve the host</label>
+                <textarea id="setting-processes" rows="5" maxlength="8256" placeholder="One process name per line"></textarea>
+                <label for="setting-media-ignore">Media detection exceptions</label>
+                <textarea id="setting-media-ignore" rows="4" maxlength="8256" placeholder="One process fragment per line"></textarea>
+              </fieldset>
+              <fieldset class="settings-card" data-settings-category="pressure" data-settings-level="standard">
+                <legend>GPU pressure</legend>
+                <label class="check-row"><input id="setting-pressure-enabled" type="checkbox"> Use GPU pressure to refuse or reclaim work</label>
+                <label for="setting-pressure-mode">Threshold mode</label>
+                <select id="setting-pressure-mode">
+                  <option value="calibrated">Calibrated</option>
+                  <option value="fixed">Fixed</option>
+                </select>
+                <label for="setting-pressure-threshold">Fixed threshold</label>
+                <div class="number-with-unit"><input id="setting-pressure-threshold" type="number" min="0" max="100" step="0.1" required aria-describedby="setting-pressure-threshold-unit"><span id="setting-pressure-threshold-unit">percent</span></div>
+                <label for="setting-pressure-sustain">Sustained load before protection engages</label>
+                <div class="number-with-unit"><input id="setting-pressure-sustain" type="number" min="0" max="86400" step="1" required aria-describedby="setting-pressure-sustain-unit"><span id="setting-pressure-sustain-unit">seconds</span></div>
+                <label for="setting-pressure-ignore">GPU pressure exceptions</label>
+                <textarea id="setting-pressure-ignore" rows="4" maxlength="8256" placeholder="One process fragment per line"></textarea>
+              </fieldset>
+              <fieldset class="settings-card" data-settings-category="owner">
+                <legend>Windows sign-in screen</legend>
+                <label class="check-row"><input id="setting-sign-in-presence" type="checkbox" aria-describedby="setting-sign-in-hint"> Treat the Windows sign-in screen as owner presence</label>
+                <p id="setting-sign-in-hint" class="hint">When this is off, waiting at the sign-in screen does not itself reserve the host. Other owner and resource checks still apply. Turn it on to treat the sign-in screen as owner presence.</p>
+              </fieldset>
+            </div>
+            <fieldset class="settings-card upstream-settings" data-settings-category="workloads" data-settings-level="standard">
+              <legend>Owner return by workload</legend>
+              <div id="settings-upstreams" class="settings-list"></div>
+            </fieldset>
+          </details>
+          <div class="settings-actions">
+            <p class="hint" id="settings-save-hint">Saving asks for administrator approval and validates the whole configuration. Capacity budgets apply to new admissions after saving; other changed policy requires a service restart.</p>
+            <div class="settings-buttons">
+              <button id="reload-settings" type="button">Discard changes and reload</button>
+              <button id="save-settings" class="primary" type="submit">Save settings</button>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer>The console reads observations from the local service. <span>Close hides the console to the tray.</span></footer>
+      <p id="control-result" role="status" aria-live="polite"></p>
+    </main>
+  </div>
+  <dialog id="control-dialog" aria-labelledby="control-title" aria-describedby="control-detail">
+    <form method="dialog"><h2 id="control-title"></h2><p id="control-detail"></p>
+    <p class="hint">This change lasts until the service restarts. Your configured defaults are unchanged.</p>
+    <div class="dialog-actions"><button value="cancel" autofocus>Cancel</button><button id="confirm-control" value="confirm" class="primary">Confirm</button></div></form>
+  </dialog>
+</body>
+</html>

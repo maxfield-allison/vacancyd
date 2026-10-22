@@ -1,0 +1,441 @@
+# vacancyd example configuration.
+#
+# The resource policy mirrors a real Windows gaming workstation whose RTX
+# 5080 is lent to a Kubernetes cluster's LiteLLM gateway while the owner is
+# away. The listeners are deliberately loopback-only until you add tokens.
+# Adjust every number to *your* measurements. Set thresholds from measured
+# footprints plus headroom.
+
+[server]
+# Status / metrics / admin API.
+# The shipped example is loopback-only. Change this to a LAN address only
+# after configuring tokens below.
+listen = "127.0.0.1:9811"
+# Optional private directory for unfinished-work recovery records. Defaults to
+# a sibling .admission directory, or $STATE_DIRECTORY/admission under systemd.
+# Only that default is created on first start, including missing parents,
+# after the path checks pass. New directories are private from creation.
+# Any other directory named here must already exist and be private: owned
+# by the service account on Unix, or owned by and accessible only to
+# Administrators and LocalSystem on Windows.
+# On Windows the directory, default or named, must be inside
+# ProgramData\vacancyd.
+# The shipped systemd unit allows writes under /etc/vacancyd,
+# /var/lib/vacancyd and /run/vacancyd, plus its private /tmp and /var/tmp
+# under PrivateTmp=true. Only a directory outside all those writable paths
+# needs ReadWritePaths= in a drop-in. Keep recovery records in a durable
+# location such as /var/lib/vacancyd: /run/vacancyd is removed when the
+# service stops, and the private /tmp and /var/tmp do not survive service
+# restarts. check-config warns if the unit blocks the directory. It models
+# installed drop-ins when the unit is installed and loaded.
+# admission_state_dir = "/var/lib/vacancyd/admission"
+# Linux only: local administration by account. Changes other than pausing
+# are made through `vacancyd admin-request` on this Unix socket, by root or a
+# member of admin_group. Empty admin_group makes root the only local
+# administrator. See docs/authentication.md, "Local administration on Linux".
+# The socket's directory needs ReadWritePaths= in a drop-in only if it is
+# outside every writable path: /etc/vacancyd, /var/lib/vacancyd,
+# /run/vacancyd and the private /tmp and /var/tmp under PrivateTmp=true.
+# /run/vacancyd suits this runtime socket. If the unit blocks its directory,
+# the channel stays down. check-config warns.
+# admin_socket = "/run/vacancyd/admin.sock"
+# admin_group = "vacancyd-admin"
+
+# Connection limits for the API and every proxy listener. The defaults suit a
+# LAN; none of them cuts off a response that is still streaming.
+# [server.limits]
+# header_read_timeout_s = 30   # also closes keep-alive connections idle this long
+# body_read_timeout_s = 120    # a request body must arrive this soon after its headers (408)
+# body_idle_timeout_s = 15     # ...and never pause longer than this (408)
+# write_stall_timeout_s = 60   # a client that accepts no response bytes this long is dropped
+# max_connections = 128        # per listener; more wait until one closes
+# max_request_body_mib = 64    # largest body a proxy accepts (413); held in memory until forwarded
+# max_buffered_body_mib = 256  # body memory per proxy across connections (503 + Retry-After);
+#                              # unset, 256 or max_request_body_mib if larger
+# tunnel_idle_timeout_s = 3600 # WebSocket tunnels with no traffic this long close
+
+# ---------------------------------------------------------------------------
+# Authentication. Bearer tokens with scopes: `borrow` (the proxy ports),
+# `read` (/status, /metrics) and `admin` (the lending switches). /healthz is
+# never authenticated.
+#
+# Note that `read` guards real privacy, not just compute: /status reports
+# whether the owner is at their desk, locked, or watching something.
+#
+# Defaults: loopback is trusted. On Windows and Linux that covers reading and
+# pausing only; other local changes need an administrator the service can
+# identify (an elevated Windows administrator, or on Linux root or the
+# admin_group above) or an admin token (docs/authentication.md, "Local
+# administration on Windows" and "on Linux"). On macOS it covers every admin
+# action. With NO tokens configured, every listener
+# must be loopback-only; a remote bind fails `check-config`. Configure one
+# token and every remote request requires the appropriate scope.
+#
+# Loopback trust covers direct local clients only. A reverse proxy, port
+# forward or SSH tunnel on this machine makes every client behind it arrive
+# from loopback: set trust_loopback = false and give clients tokens.
+#
+# Generate values with `vacancyd gen-token`. See docs/authentication.md.
+# ---------------------------------------------------------------------------
+
+[auth]
+trust_loopback = true
+# Emergency escape hatch for a separately secured network. This exposes both
+# the hardware and owner-presence data without credentials; leave it false.
+allow_unauthenticated_remote = false
+
+# [[auth.token]]
+# name   = "cluster"        # shown in logs; never the secret
+# scopes = ["borrow"]
+# value_file = "C:/ProgramData/vacancyd/secrets/cluster.token"
+
+# [[auth.token]]
+# name   = "prometheus"
+# scopes = ["read"]
+# value_env = "VACANCYD_TOKEN_PROMETHEUS"
+
+# [[auth.token]]
+# name   = "operator"
+# scopes = ["read", "admin"]
+# value_file = "C:/ProgramData/vacancyd/secrets/operator.token"
+#
+# Exactly one of value / value_env / value_file per token. Inline `value` is
+# discouraged: it puts a secret in a file that gets copied and backed up.
+
+[poll]
+interval_ms = 3000
+
+[log]
+# error, warn, info (the default), debug or trace. debug and trace apply to
+# vacancyd's own events; the libraries it uses stay at info. RUST_LOG, when
+# set, replaces this. To look closer for a while without a restart, open a
+# temporary debug window instead (docs/diagnostics.md).
+level = "info"
+
+[owner]
+# Where session presence comes from. "auto" reads the platform: signed-in
+# sessions on Windows, systemd-logind on Linux. "headless" declares that
+# nobody ever sits at this machine: sessions, idle, playback and `processes`
+# are not read, and the host lends as logged out. Use it only for a server or
+# container without systemd-logind; it cannot be combined with `processes`.
+presence = "auto"
+# Processes that mean "the owner is using this machine". Names without .exe,
+# case-insensitive. Typically your game library. Windows checks the
+# foreground app; Linux checks every process of the user whose unlocked
+# session is in the foreground, by executable, process name and first
+# argument, so a Proton game's Windows name works too.
+processes = ["Marathon", "StarCitizen", "RSI Launcher"]
+# Seconds the veto holds after the last read that counted as presence: an
+# owner process leaving the foreground, but also locking, signing out or going
+# idle. An alt-tab or a quick lock does not flap lending back on mid-session.
+release_after_s = 120
+# An unlocked, logged-in desktop counts as presence on its own. This is the
+# safe default: if you are sitting there, the machine is yours. Set false to
+# lend while you work, leaving only games and playback to hold it back.
+unlocked_session_is_presence = true
+# Seconds of no keyboard or mouse input after which an *unlocked* session
+# stops counting as presence when you walk away without locking. 0 disables
+# it. On Windows it needs the user-session agent installed. On Linux it uses
+# the idle hint your desktop reports to systemd-logind; check yours with
+# `loginctl show-session <id> -p IdleHint -p IdleSinceHint`. Without a
+# reading, idle time is unknown, and unknown is never treated as idle.
+idle_lends_after_s = 900
+# Playback counts as presence, so a film is never mistaken for an empty
+# chair. Detected from the display-wake request the player itself asserts
+# (the reason your screen does not blank mid-movie), so there is no list of
+# players to maintain. It covers VLC, mpv, Plex, browser video and whatever
+# ships next, on any Windows display language. Reading it needs elevation; a
+# service has it. When it cannot be read, an unlocked session keeps refusing
+# borrowed work, including with unlocked_session_is_presence = false, rather
+# than assuming nothing is playing, and `vacancyd status` says why. Set this
+# false to lend without the check. Windows only: Linux does not read
+# playback yet.
+media_is_presence = true
+media_poll_ms = 5000
+# Escape hatch for an application that asserts a display-wake request and
+# never releases it, which would otherwise pin the machine as "in use".
+# Matched case-insensitively as a substring.
+media_ignore = []
+# A PC waiting at the sign-in screen (after a reboot, a sign-out, or Switch
+# user) has nobody signed in, so it lends like any logged-out machine once
+# two consecutive session reads agree. On Linux the sign-in screen is the
+# display manager's greeter (GDM, SDDM, LightDM). Set true to keep the
+# sign-in screen refusing. A session state that cannot be read refuses either
+# way.
+sign_in_screen_is_presence = false
+
+# ---------------------------------------------------------------------------
+# Per-resource pressure from GPU load, attributed to whoever is causing it.
+#
+# `processes` above has to name every application. This does not: it asks how
+# much of each card is being used by something vacancyd did not admit, which
+# covers games, Blender, Resolve, CAD, a local fine-tune and whatever you
+# install next, without naming any of them. Keep `processes` as well: a named
+# process provides an explicit host-wide policy for applications you know.
+# Implemented on Windows. On Linux and macOS set enabled = false until a
+# platform attribution backend is available; if left enabled, readiness stays
+# unknown and GPU-dependent upstreams fail closed.
+# ---------------------------------------------------------------------------
+
+[owner.gpu_pressure]
+enabled = true
+
+# Learn each card's ordinary load and keep the threshold above it. Lending
+# waits for the first calibration of the current attendance profile. "fixed"
+# skips learning and requires an explicit threshold_pct > 0. The retired
+# "adaptive" still loads, runs as "calibrated" and logs a warning.
+mode = "calibrated"
+threshold_pct = 0
+# The highest threshold calibration may learn. Readings taken while pressure
+# is engaged are learned too, so this is what stops a long render or game from
+# teaching itself away. Valid, calibrated samples at or above it engage
+# pressure after `sustain_s`; owner work below it may remain undetected.
+cap_pct = 40
+
+# Target threshold = learned quantile + margin, never below the floor or above
+# the cap. The floor matters on a very quiet machine: without it the threshold
+# approaches zero and ordinary desktop noise reads as the owner returning.
+margin_pct = 20
+# 0 < floor_pct <= cap_pct <= 90. An older file with the floor above the cap
+# runs with the cap at the floor, and a cap above 90 runs at 90; both warn.
+floor_pct = 25
+
+# Seconds of sustained load before the resource refuses. Stops a thumbnail render
+# or a scrolled page from evicting a model that takes half a minute to reload.
+# The release side is `release_after_s` above.
+sustain_s = 15
+
+# Every reading goes into a histogram per attendance profile (locked and
+# unlocked learn separately). learn_quantile of it is the learned load: high on
+# purpose, so a desktop's busy afternoons are learned as normal rather than
+# refused. Older readings count half after learn_half_life_h hours of observed
+# time; downtime and gaps do not age them.
+learn_quantile = 0.75
+learn_half_life_h = 72
+# A lower target applies at once. A higher one is approached at most this many
+# percentage points per observed hour.
+raise_pct_per_h = 1
+# The first calibration needs warmup_samples successful readings. Elapsed time
+# depends on the actual poll cadence, probe duration, and failed-read gaps; it
+# is not a fixed timer. Missing readings pause it without losing progress.
+# baseline_quantile and baseline_window_s are deprecated and ignored; a console
+# save removes them.
+warmup_samples = 60
+
+# Its own cadence: the read spans about a thousand counter instances.
+poll_ms = 5000
+
+# Processes whose GPU use never counts as pressure: a wallpaper engine, a
+# monitoring overlay, a second inference server you run outside vacancyd.
+# Case-insensitive substring match, like media_ignore.
+ignore = []
+
+# Completed calibration is cached only for UUID-selected GPUs. Restore checks
+# the GPU UUID and the ignore list, not the PCI address; changing any learning,
+# threshold or timing setting keeps it. A schema 2 or 3 cache from an earlier
+# version is migrated: each saved baseline becomes a starting threshold, so
+# lending continues. Older formats are ignored. Empty means
+# vacancyd-pressure.json beside this file. The shipped systemd unit can
+# write beside /etc/vacancyd/vacancyd.toml. You can instead set this to
+# /var/lib/vacancyd/pressure.json. A path set here must be in a directory
+# only the service account can write, and on Windows inside
+# ProgramData\vacancyd; otherwise the cache is not used. It is a cache.
+# To recalibrate, stop vacancyd, move this file aside, then start it. Lending
+# waits for calibration again. See docs/calibration.md.
+state_file = ""
+
+# ---------------------------------------------------------------------------
+# Resources: the hardware that can be lent. Disable any of them here, or at
+# runtime: POST /admin/resources/<id>/disable with X-Vacancyd-Admin: 1
+# ---------------------------------------------------------------------------
+
+[[resource]]
+id = "gpu0"
+kind = "nvidia-gpu"
+# UUID (stable across reboots, from `nvidia-smi -L`) or an index. Prefer the
+# UUID, configure the dedicated upstream process to use that same UUID (for
+# CUDA servers, CUDA_VISIBLE_DEVICES=GPU-... where supported), then load a test
+# model and verify its process on that UUID with `nvidia-smi`. CUDA may renumber
+# visible devices internally; do not match numeric indexes across tools.
+selector = "GPU-11111111-2222-3333-4444-555555555555"
+# Optional identity override for pressure attribution. Normally vacancyd reads
+# this from `nvidia-smi --query-gpu=pci.bus_id`; if set, it must agree with the
+# selected GPU or that pressure input remains unknown.
+# adapter = "0000:0e:00.0"
+enabled = true
+
+[[resource]]
+id = "gpu1"
+kind = "nvidia-gpu"
+selector = "GPU-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+# A second card can lend independently - useful for smaller supporting
+# models (embeddings, rerank, speech) while the big card serves chat.
+enabled = true
+
+[[resource]]
+id = "mem"
+kind = "system-memory"
+# Bytes that must stay free for the owner (16 GiB). A job's memory
+# requirement on this resource is charged on top of it: with 20 GiB free, a
+# job that needs 6 GiB here is refused. Enabled because the
+# upstreams below name it in `also_requires` - an upstream that requires a
+# disabled resource refuses every request.
+reserve = 17179869184
+enabled = true
+
+[[resource]]
+id = "cpu"
+kind = "system-cpu"
+# Load percent above which the CPU is not lendable.
+reserve = 60
+enabled = false
+
+# ---------------------------------------------------------------------------
+# Upstreams: the services being fronted. Point your gateway at `listen`
+# instead of the real service; vacancyd forwards when there is vacancy and
+# answers 503 + Retry-After when there is not.
+#
+# Give each upstream its own server. Reclaiming an upstream unloads every
+# model on its server, so two upstreams whose targets reach the same server
+# (any loopback address and localhost count as one host) must name the same
+# resources. A server spanning two GPUs is one upstream: resource = "gpu0",
+# also_requires = ["gpu1"].
+# ---------------------------------------------------------------------------
+
+[[upstream]]
+id = "ollama"
+listen = "127.0.0.1:11435"
+target = "http://127.0.0.1:11434"
+kind = "ollama"
+resource = "gpu0"
+# Additional resources that must also be lendable before work is admitted.
+also_requires = ["mem"]
+# Owner return always refuses new work. Accepted proxy work drains for 30s,
+# then its connection is cancelled, unless the owner leaves or the pressure
+# reading recovers first. Advanced: "cancel" immediately, or "finish"
+# without a time limit. A disconnect does not prove upstream work stopped;
+# ComfyUI prompts vacancyd admitted are also deleted or interrupted.
+on_owner_return = "drain"
+drain_timeout_s = 30
+# Tracking expiry retains uncertain work for operator recovery.
+completion_timeout_s = 3600
+# Also request model unload after the drain (Ollama /api/ps + keep_alive:0).
+# Finish mode waits for affected work, up to completion_timeout_s. Held work
+# keeps its reservation but never delays the unload.
+# The same cancellation policy applies to affected-resource GPU pressure.
+yield_on_veto = true
+# Free MiB required for a model not listed below, on each resource a scalar
+# requirement applies to (see below).
+default_min_free_mib = 8500
+# Borrowers may not manage this upstream: pulling, creating, copying, pushing
+# or deleting models, and reading /api/ps (what the owner has loaded, and
+# when it was last used), are refused with 403, as is any read other than
+# /, /api/version, /api/tags and /v1/models. "allow" hands every borrower the
+# model store and every read, for example for Open WebUI or LiteLLM model
+# management through the gate. Use it only on an instance dedicated to
+# borrowed work.
+management = "deny"
+
+[upstream.models]
+# Free MiB a request needs when it may have to load the model: measured
+# residency + ~500 MiB headroom. Measure with:
+#   curl -s localhost:11434/api/ps   (size_vram after loading each model)
+# A scalar applies to every NVIDIA GPU dependency, and to the primary resource
+# when that is system memory (a CPU-only upstream), on top of its reserve.
+# For split models, or to budget an also_requires memory resource, use a map
+# that names every NVIDIA dependency, for example:
+# "split-model" = { gpu0 = 10000, gpu1 = 14000 }
+#
+# While a model is resident, a request that reuses it as loaded is charged
+# resident_min_free_mib instead (default 0, never more than the load figure).
+# For Ollama that means /api/ps lists it, it unloads no sooner than 30s from
+# now, the request sets no runner option but num_ctx, and the loaded
+# context_length is the request's num_ctx or one an earlier request of the
+# same kind (explicit or unset num_ctx, /api or /v1) was seen to load, or, for
+# a request that leaves num_ctx unset, the num_ctx the model's Modelfile sets.
+# What was learned is kept with the model digest across restarts.
+# Either form can set it:
+# "gemma3:12b" = { min_free_mib = 8200, resident_min_free_mib = 300 }
+# "split-model" = { gpu0 = 10000, gpu1 = 14000, resident_min_free_mib = 300 }
+"gemma3:12b" = 8200
+"qwen2.5-coder:14b" = 11800
+"gpt-oss:20b" = 12700
+
+# ComfyUI. Its shape differs from an LLM server: work is *submitted* to
+# POST /prompt and collected later, and checkpoints live inside the workflow
+# graph rather than a `model` field - so this upstream gates on resource
+# headroom, not per-model. A borrower's own results (/history/<id>, /view,
+# /ws), the node and model catalogue and /system_stats always pass through,
+# so its client keeps working while lending is closed. On a route
+# with one GPU, memory ComfyUI's allocator already holds (torch_vram_total)
+# counts toward this headroom, because ComfyUI reuses it for the next job.
+[[upstream]]
+id = "comfyui"
+listen = "127.0.0.1:8189"
+target = "http://127.0.0.1:8188"
+kind = "comfyui"
+resource = "gpu0"
+also_requires = ["mem"]
+# Yields via POST /free {"unload_models":true,"free_memory":true}, skipped while
+# ComfyUI runs or queues prompts vacancyd did not admit.
+yield_on_veto = true
+default_min_free_mib = 6000
+# Borrowers submit prompts and collect their own results (/history/<id>,
+# /view). Uploads, /free, /interrupt, queue and history changes, settings,
+# saved workflows, the full history and queue lists, ComfyUI-Manager and any
+# read not listed for borrowers (including the web interface's own pages)
+# are refused unless this is "allow", which the ComfyUI web interface and
+# image-to-image clients that upload inputs need.
+management = "deny"
+
+# Chatterbox TTS. Only POST /v1/audio/speech is borrower work. Voice-library
+# uploads/deletes, /admin/unload and /status (whether it is generating now)
+# are management routes; /v1/audio/voices, /healthz and /readyz pass
+# through, and any other read is refused unless management = "allow". The service
+# holds one model, reported unnamed like llama.cpp's, so a request while it is
+# loaded is charged its resident requirement rather than a cold load. It
+# unloads on owner return or pressure when yielding is enabled.
+[[upstream]]
+id = "chatterbox"
+listen = "127.0.0.1:8859"
+target = "http://127.0.0.1:8858"
+kind = "chatterbox"
+resource = "gpu0"
+also_requires = ["mem"]
+yield_on_veto = true
+default_min_free_mib = 3600
+management = "deny"
+# Owner presence refuses and reclaims every upstream by default ("host").
+# "resource" exempts this one from the owner veto and session evidence: it
+# keeps lending while you use the machine, gated only by the lending switches,
+# its resources' capacity and, on Windows, GPU pressure, which is then the
+# only thing that reclaims it. Use it only for a lane on its own server, on a
+# card your own work never uses. Status, the console and the startup log name
+# every exempt upstream. See docs/admission.md.
+owner_scope = "host"
+
+[[upstream]]
+id = "llamacpp"
+listen = "127.0.0.1:8001"
+target = "http://127.0.0.1:8000"
+kind = "openai"
+resource = "gpu0"
+# llama-server has no unload API. Refusing new work during a veto does not
+# establish that an existing model stopped computing or released memory.
+yield_on_veto = false
+default_min_free_mib = 0
+# Borrowers read /v1/models, /models and /health. /slots (the prompts being
+# processed), /metrics, /props and every other read are refused unless
+# management = "allow".
+# If llama-server runs with --api-key, give vacancyd that key here; it is sent
+# on every request vacancyd makes to this upstream and never to borrowers.
+# Never put credentials in `target`: a URL with user:password@ is refused.
+# [upstream.credential]
+# scheme = "bearer"               # or "basic", with username = "..."
+# value_file = "llamacpp.key"     # or value_env = "LLAMACPP_API_KEY"
+
+# Setup and this example configure vacancyd only. They do not edit upstream
+# binds or firewall rules. Status reports the observed real-service listener as
+# loopback only, listens on network, or unknown. Direct requests to a listener
+# on the network bypass owner protection; that observation does not claim
+# Internet exposure.

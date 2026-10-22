@@ -1,0 +1,10 @@
+{
+  "artwork": "Original vacancyd typography and existing project mark",
+  "font": "Bundled Archivo, SIL Open Font License 1.1",
+  "renderer": "capture-brand.mjs with Chromium",
+  "dimensions": {
+    "width": 1200,
+    "height": 630
+  },
+  "license": "Apache-2.0; bundled fonts retain OFL-1.1"
+}

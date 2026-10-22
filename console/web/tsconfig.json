@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ES2022", "moduleResolution": "Bundler",
+    "strict": true, "noUnusedLocals": true, "noUnusedParameters": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], "rootDir": "src", "outDir": "dist",
+    "noEmitOnError": true, "newLine": "lf"
+  },
+  "include": ["src/*.ts"]
+}

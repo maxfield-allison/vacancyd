@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Archivo",
+    "version": "cc64253d36665a5ca0d6719cdf1e32b3de453b51",
+    "license": "OFL-1.1",
+    "files": [
+      {
+        "path": "console/web/assets/fonts/Archivo.ttf",
+        "sha256": "0e094a7d3c7c4c25cf1310c4b30014f1dae9332220b1c2c88f4fa996f0b05053",
+        "source": "https://api.github.com/repos/google/fonts/git/blobs/cc64253d36665a5ca0d6719cdf1e32b3de453b51"
+      }
+    ],
+    "license_file": {
+      "path": "console/web/assets/fonts/Archivo-OFL.txt",
+      "sha256": "108b4e57c9c796d3d38d0428ca7ee39de47ad93187302718d9b2d8864b9b716b",
+      "source": "https://api.github.com/repos/google/fonts/git/blobs/8597481ebc941863ab228e79ea4305507cd73cc6"
+    }
+  },
+  {
+    "name": "IBMPlexMono",
+    "version": "0c9770d5183ba60dc4350d3e011b782a320761ae",
+    "license": "OFL-1.1",
+    "files": [
+      {
+        "path": "console/web/assets/fonts/IBMPlexMono.ttf",
+        "sha256": "6a3412f058c7d8dfd9170c41e85ade48e5156ecb89356110ca57a0a27734af46",
+        "source": "https://api.github.com/repos/google/fonts/git/blobs/0c9770d5183ba60dc4350d3e011b782a320761ae"
+      }
+    ],
+    "license_file": {
+      "path": "console/web/assets/fonts/IBMPlexMono-OFL.txt",
+      "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da",
+      "source": "https://api.github.com/repos/google/fonts/git/blobs/c35c4c618fab33da8695177b3a6cefe0810b7b28"
+    }
+  }
+]

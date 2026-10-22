@@ -1,0 +1,22 @@
+{
+  "reviews": [
+    {
+      "advisory": "RUSTSEC-2024-0370",
+      "package": "proc-macro-error",
+      "version": "1.0.4",
+      "warning": "unmaintained",
+      "disposition": "outside-supported-graphs",
+      "expires": "2026-11-15",
+      "rationale": "Tauri Linux GUI dependency exists in the platform-independent lockfile but is absent from every supported build graph; rechecked on each run."
+    },
+    {
+      "advisory": "RUSTSEC-2024-0429",
+      "package": "glib",
+      "version": "0.18.5",
+      "warning": "unsound",
+      "disposition": "outside-supported-graphs",
+      "expires": "2026-11-15",
+      "rationale": "Tauri Linux GUI dependency exists in the platform-independent lockfile but is absent from every supported build graph; rechecked on each run."
+    }
+  ]
+}

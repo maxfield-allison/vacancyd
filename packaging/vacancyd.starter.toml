@@ -1,0 +1,39 @@
+# Safe first-run configuration installed by the Windows MSI.
+#
+# The service starts and exposes health/readiness on loopback, but it lends
+# nothing until resources and upstreams are added. Copy the relevant sections
+# from vacancyd.example.toml, then validate the result with:
+#
+#   vacancyd check-config --config C:\ProgramData\vacancyd\vacancyd.toml
+
+[server]
+listen = "127.0.0.1:9811"
+
+[auth]
+trust_loopback = true
+allow_unauthenticated_remote = false
+
+[poll]
+interval_ms = 3000
+
+[owner]
+processes = []
+release_after_s = 120
+unlocked_session_is_presence = true
+idle_lends_after_s = 0
+media_is_presence = true
+media_poll_ms = 5000
+media_ignore = []
+
+[owner.gpu_pressure]
+# Enable after adding a Windows NVIDIA resource and confirming adapter mapping.
+# Linux and macOS attribution are not implemented yet.
+enabled = false
+
+[[resource]]
+# A disabled placeholder keeps the starter config structurally valid without
+# guessing which GPU, CPU policy, or memory reserve belongs to this machine.
+id = "configure-me"
+kind = "system-memory"
+reserve = 0
+enabled = false

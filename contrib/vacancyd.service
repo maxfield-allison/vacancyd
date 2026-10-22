@@ -1,0 +1,72 @@
+# systemd unit for vacancyd (Linux lenders).
+#
+# The full procedure, including which settings of vacancyd.example.toml to
+# change on Linux, is docs/setup.md, "Linux: install from the release
+# archive". From the root of the extracted archive (from a source checkout,
+# use target/release/vacancyd for the binary):
+#
+#   sudo install -m 755 vacancyd /usr/local/bin/
+#   sudo install -d -m 755 /etc/vacancyd
+#   sudo install -m 600 vacancyd.example.toml /etc/vacancyd/vacancyd.toml
+#   # Edit /etc/vacancyd/vacancyd.toml: owner.gpu_pressure.enabled = false
+#   # (no Linux attribution backend yet), admission_state_dir =
+#   # "/var/lib/vacancyd/admission", your processes, GPUs and upstreams.
+#   # Without systemd-logind, set owner.presence = "headless".
+#   sudo vacancyd check-config --config /etc/vacancyd/vacancyd.toml
+#   # Optional: let an account change settings without sudo (root always
+#   # can). Membership applies from that account's next login.
+#   sudo groupadd --system vacancyd-admin
+#   sudo usermod -aG vacancyd-admin <account>
+#   sudo install -m 644 contrib/vacancyd.service /etc/systemd/system/
+#   sudo systemd-analyze verify /etc/systemd/system/vacancyd.service
+#   sudo systemctl enable --now vacancyd
+#
+# nvidia-smi must be on PATH for the service user.
+
+[Unit]
+Description=vacancyd - gate borrowed AI requests on owner policy and available resources
+After=network-online.target dbus.service systemd-logind.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/vacancyd run --config /etc/vacancyd/vacancyd.toml
+Restart=on-failure
+RestartSec=5
+# The log level is `[log] level` in the configuration. Setting RUST_LOG
+# here would replace it.
+# Creates the writable state directory for admission recovery and an optional
+# pressure cache.
+StateDirectory=vacancyd
+StateDirectoryMode=0700
+# Local administration: the admin socket /run/vacancyd/admin.sock. Any local
+# account may connect and pause; the service decides everything else from the
+# caller's uid and groups (root, or the vacancyd-admin group). Keep the
+# directory at 0755 so ordinary accounts can reach the socket.
+RuntimeDirectory=vacancyd
+RuntimeDirectoryMode=0755
+# Saving settings (vacancyd admin-request, or POST /admin/settings with an
+# admin token) rewrites the configuration in place. Everything else under
+# /etc stays read-only. If the configuration lives elsewhere, name its
+# directory here instead.
+ReadWritePaths=-/etc/vacancyd
+UMask=0077
+# Hardening: it needs network, process inventory, the ability to spawn
+# nvidia-smi, and a connection to the system bus socket
+# (/run/dbus/system_bus_socket) to read systemd-logind. None of the directives
+# below block that. If you add RestrictAddressFamilies, keep AF_UNIX. After
+# any sandbox change, check that /status shows presence_backend "logind" and
+# a presence.basis that does not report systemd-logind as unavailable. Linux
+# GPU attribution is not implemented yet.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

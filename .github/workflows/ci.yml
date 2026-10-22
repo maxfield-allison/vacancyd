@@ -1,0 +1,90 @@
+name: CI
+# Light public checks for pull requests and main: formatting, lints, tests,
+# dependency policy and a secret scan on Linux, the console's browser tests,
+# and the native Windows tests. No job here holds a secret or builds a release;
+# releases are built, signed and published by the maintainer's private build
+# pipeline from the exact public tree (docs/releasing.md).
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Locked Rust and source gates
+        run: |
+          rustup toolchain install 1.89.0 --profile minimal --component rustfmt --component clippy
+          rustup override set 1.89.0
+          python -m unittest discover -s scripts -p 'test_*.py' -v
+          python scripts/check_vendor.py
+          cargo fmt --all -- --check
+          cargo clippy --locked --all-targets --all-features -- -D warnings
+          cargo test --locked --all-targets
+          cargo install cargo-audit --locked --version 0.22.2
+          cargo install cargo-about --locked --version 0.9.2 --features cli
+          cargo fetch --locked
+          python scripts/audit_dependencies.py
+          python scripts/dependency_notices.py --check
+      - name: Secret scan
+        run: >-
+          docker run --rm -v "$PWD:/source:ro"
+          ghcr.io/gitleaks/gitleaks:v8.29.0@sha256:507de9682470025fb3e7f57fe4c4ca8263d81369e027b6538b8a252a9c0371d4
+          detect --source /source --redact --no-git
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: dependency-audit
+          path: target/audit-report.json
+          retention-days: 14
+  console:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22.23.2'
+      - run: |
+          npm --prefix console/web ci --ignore-scripts --no-audit --no-fund
+          npm --prefix console/web run build
+          cd console/web
+          npx --no-install playwright install --with-deps chromium
+          npm test
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22.23.2'
+      - name: Native Windows tests without signing privileges
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . ./scripts/windows_build_env.ps1
+          rustup toolchain install 1.89.0 --profile minimal
+          if ($LASTEXITCODE) { throw 'Rust installation failed' }
+          npm --prefix console/web ci --ignore-scripts --no-audit --no-fund
+          if ($LASTEXITCODE) { throw 'Frontend install failed' }
+          npm --prefix console/web run build
+          if ($LASTEXITCODE) { throw 'Frontend build failed' }
+          cargo +1.89.0 test --locked --workspace --all-targets --all-features
+          if ($LASTEXITCODE) { throw 'Native Windows tests failed' }

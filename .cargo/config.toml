@@ -1,0 +1,6 @@
+# Windows packages must run without a separately installed Visual C++ runtime.
+[target.'cfg(target_env = "msvc")']
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[resolver]
+incompatible-rust-versions = "fallback"

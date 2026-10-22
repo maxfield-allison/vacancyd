@@ -1,0 +1,93 @@
+[project]
+site_name = "vacancyd"
+site_description = "Set up owner-first resource lending for your Windows or Linux machine."
+site_author = "Maxfield Allison"
+site_url = "https://docs.vacancyd.com/"
+repo_url = "https://github.com/maxfield-allison/vacancyd"
+edit_uri = ""
+copyright = "Copyright &copy; 2026 Maxfield Allison"
+docs_dir = "build/docs-site"
+site_dir = "site"
+extra_css = ["stylesheets/vacancyd.css"]
+extra_javascript = ["javascripts/keyboard.js"]
+nav = [
+  { "Overview" = "index.md" },
+  { "Get started" = [
+    { "Installation" = "setup.md" },
+    { "Windows service" = "windows-service.md" },
+    { "Containers" = "container.md" },
+    { "Authentication" = "authentication.md" },
+    { "Compatibility" = "compatibility.md" },
+  ] },
+  { "Owner console" = [
+    { "Console overview" = "console.md" },
+    { "Controls" = "console-controls.md" },
+    { "Settings" = "console-settings.md" },
+    { "Session agent" = "split-agent.md" },
+    { "Agent startup" = "agent-startup.md" },
+  ] },
+  { "Resource lending" = [
+    { "Admission and recovery" = "admission.md" },
+    { "Availability tiers" = "tiers.md" },
+    { "GPU calibration" = "calibration.md" },
+    { "GPU telemetry" = "gpu-telemetry-metrics.md" },
+    { "Diagnostics" = "diagnostics.md" },
+    { "LiteLLM interoperation" = "litellm-503-interop.md" },
+  ] },
+  { "Project" = [
+    { "Architecture" = "architecture.md" },
+    { "Prior art" = "prior-art.md" },
+    { "Dependency policy" = "dependency-policy.md" },
+    { "Release verification" = "releasing.md" },
+    { "Security" = "security.md" },
+    { "Changelog" = "changelog.md" },
+    { "License" = "license.md" },
+    { "Visual identity" = "brand.md" },
+  ] },
+]
+
+[project.theme]
+variant = "modern"
+custom_dir = "docs-theme"
+font = false
+logo = "assets/brand/mark-lit.svg"
+favicon = "assets/brand/mark-mono.svg"
+features = [
+  "content.code.copy",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to dark mode"
+
+[project.extra]
+generator = false
+
+[project.validation]
+omitted_files = "warn"
+absolute_links = "warn"
+unrecognized_links = "warn"
+anchors = "warn"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+tables = {}
+toc.permalink = true
+pymdownx.superfences = {}

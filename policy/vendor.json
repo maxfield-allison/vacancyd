@@ -1,0 +1,33 @@
+{
+  "upstream_package": "tauri-utils-2.9.3",
+  "archive": "vendor/upstream/tauri-utils-2.9.3.crate",
+  "directory": "vendor/tauri-utils",
+  "sha256": "3e176a18e67764923c4f1ce66f25ae4abe5f688384d5eb1a0fa6c77f3d90f887",
+  "upstream_source_commit": "6f6ab1207bb3923c2721fbc67d2fdb1c8deb0c7a",
+  "upstream_fix": "https://github.com/tauri-apps/tauri/commit/dd725f4b13c30a86b398ccc59eb498f151f461c5",
+  "omitted_files": [
+    "Cargo.lock"
+  ],
+  "replacements": [
+    {
+      "path": "Cargo.toml",
+      "before": "version = \"2.9.3\"",
+      "after": "version = \"2.9.3+vacancyd.1\""
+    },
+    {
+      "path": "Cargo.toml.orig",
+      "before": "version = \"2.9.3\"",
+      "after": "version = \"2.9.3+vacancyd.1\""
+    },
+    {
+      "path": "Cargo.toml",
+      "before": "[dependencies.urlpattern]\nversion = \"0.3\"",
+      "after": "[dependencies.urlpattern]\nversion = \"0.6\""
+    },
+    {
+      "path": "Cargo.toml.orig",
+      "before": "urlpattern = \"0.3\"",
+      "after": "urlpattern = \"0.6\""
+    }
+  ]
+}

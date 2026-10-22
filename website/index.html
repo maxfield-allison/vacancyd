@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vacancyd — Spare compute. On your terms.</title>
+    <meta
+      name="description"
+      content="Lend spare compute to local AI while keeping owner policy in control. Vacancyd checks presence, resources and workload policy before admitting borrowed work."
+    />
+    <link rel="canonical" href="https://vacancyd.com/" />
+    <meta name="theme-color" content="#0b0f17" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vacancyd" />
+    <meta
+      property="og:title"
+      content="Vacancyd — Spare compute. On your terms."
+    />
+    <meta
+      property="og:description"
+      content="Your workstation has room for more. You still get first call."
+    />
+    <meta property="og:url" content="https://vacancyd.com/" />
+    <meta
+      property="og:image"
+      content="https://vacancyd.com/assets/social-card.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Vacancyd — Spare compute. On your terms."
+    />
+    <meta
+      name="twitter:description"
+      content="Owner-first resource lending for local compute. Windows and Linux. Apache-2.0."
+    />
+    <meta
+      name="twitter:image"
+      content="https://vacancyd.com/assets/social-card.png"
+    />
+    <link rel="icon" href="/assets/mark-lit.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Vacancyd",
+        "url": "https://vacancyd.com/",
+        "description": "Owner-first resource lending for local compute.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows, Linux",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "author": { "@type": "Person", "name": "Maxfield Allison" },
+        "sameAs": "https://github.com/maxfield-allison/vacancyd"
+      }
+    </script>
+    <!-- ANALYTICS -->
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="masthead">
+      <nav class="nav wrap" aria-label="Main navigation">
+        <a class="wordmark" href="/" aria-label="Vacancyd home"
+          ><img
+            src="/assets/mark-lit.svg"
+            alt=""
+            width="30"
+            height="30"
+          />vacancyd<span class="wordmark-dot">.</span></a
+        >
+        <div class="nav-links">
+          <a href="#how-it-works">How it works</a
+          ><a href="#platforms">Platforms</a
+          ><a href="https://docs.vacancyd.com/" data-umami-event="open-docs"
+            >Docs <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="button button-small" href="#get-vacancyd">Get Vacancyd</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy wrap">
+          <p class="eyebrow">Owner-first compute lending</p>
+          <h1 id="hero-title">
+            Spare compute.<br /><span>On your terms.</span>
+          </h1>
+          <p class="hero-description">
+            Your workstation has room for more.<br />You still get first call.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#get-vacancyd"
+              >Get Vacancyd <span aria-hidden="true">↓</span></a
+            ><a class="text-link" href="#how-it-works"
+              >See how it works <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <p class="hero-platforms">Windows · Linux · Open source</p>
+        </div>
+        <div
+          class="hero-stage wrap"
+          aria-label="Vacancyd owner console preview"
+        >
+          <div class="stage-halo" aria-hidden="true"></div>
+          <div class="window-shell">
+            <div class="window-top" aria-hidden="true">
+              <span class="window-dots"><i></i><i></i><i></i></span
+              ><span>vacancyd / owner console</span
+              ><span class="window-live">LOCAL</span>
+            </div>
+            <img
+              class="console-shot"
+              src="/assets/console-overview.jpg"
+              alt="Vacancyd owner console showing lending status, resource checks and configured workloads with example data."
+              width="1440"
+              height="760"
+              fetchpriority="high"
+            />
+          </div>
+          <p class="image-caption">The owner console. Example data shown.</p>
+        </div>
+        <a class="scroll-cue" href="#the-idea"
+          >More room. Same machine. <span aria-hidden="true">↓</span></a
+        >
+      </section>
+
+      <section
+        id="the-idea"
+        class="section introduction wrap reveal"
+        aria-labelledby="idea-title"
+      >
+        <p class="eyebrow">Built for the machine you already use</p>
+        <h2 id="idea-title">
+          A workstation.<br /><span class="muted">With a little vacancy.</span>
+        </h2>
+        <div class="intro-bottom">
+          <p class="large-copy">
+            Run a local model. Share an inference route. Put spare resources to
+            work when your machine can afford it.
+          </p>
+          <p>
+            Vacancyd sits in front of your inference server. Before borrowed
+            work gets through, it checks owner policy, resource availability and
+            the rules for that workload. You choose what can lend, and when.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="how-it-works"
+        class="section demo-section"
+        aria-labelledby="how-title"
+      >
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="eyebrow">The sign says it all</p>
+            <h2 id="how-title">Room for work.<br />Until you need it.</h2>
+            <p>
+              A normal refusal is the policy working. Try the two states below.
+            </p>
+          </div>
+          <div class="demo-panel reveal">
+            <div
+              class="demo-choice"
+              role="group"
+              aria-label="Preview owner presence"
+            >
+              <button type="button" data-presence="away" aria-pressed="true">
+                Machine unattended
+              </button>
+              <button type="button" data-presence="here" aria-pressed="false">
+                Owner at the desk
+              </button>
+            </div>
+            <div
+              class="vacancy-sign"
+              data-vacancy="true"
+              role="img"
+              aria-label="Vacancy"
+            >
+              <span class="sign-no">NO</span
+              ><span class="sign-vacancy">VACANCY</span>
+            </div>
+            <div class="demo-caption" aria-live="polite" aria-atomic="true">
+              <h3 id="demo-title">Room for borrowed work.</h3>
+              <p id="demo-description">
+                This example route can accept work while its owner is away and
+                the resource checks pass.
+              </p>
+            </div>
+            <div class="route-flow" aria-label="Borrowed request route">
+              <span>Borrowed request</span
+              ><span class="flow-line" aria-hidden="true"></span
+              ><span class="flow-gate">Vacancyd</span
+              ><span class="flow-line" aria-hidden="true"></span
+              ><span id="route-result">Inference server</span>
+            </div>
+            <p class="demo-footnote">
+              Interactive illustration, not live telemetry. Work already
+              admitted follows your configured cancel, drain or finish policy.
+              Resource-scoped routes can have different owner-presence rules.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features wrap" aria-labelledby="features-title">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Control that stays close</p>
+          <h2 id="features-title">Your hardware.<br />Your house rules.</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card feature-wide reveal">
+            <div class="feature-copy">
+              <span class="feature-number">01 / Presence</span>
+              <h3>Aware of the owner.</h3>
+              <p>
+                On Windows, the session agent reports desktop presence to the
+                service. On Linux, systemd-logind supplies the default presence
+                check. Dedicated machines can use headless policy.
+              </p>
+              <a href="https://docs.vacancyd.com/split-agent/"
+                >Meet the session agent <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <div class="presence-art" aria-hidden="true">
+              <div class="desk-screen">
+                <span class="screen-line"></span
+                ><span class="screen-line short"></span
+                ><span class="screen-cursor"></span>
+              </div>
+              <div class="desk-base"></div>
+              <span class="presence-label"><i></i> OWNER POLICY</span>
+            </div>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-number">02 / Capacity</span>
+            <h3>Spare means spare.</h3>
+            <p>
+              CPU, memory and GPU checks decide whether a configured route has
+              room. Unknown or stale required readings withhold new work rather
+              than guessing.
+            </p>
+            <div class="resource-art" aria-hidden="true">
+              <span>CPU <i style="--fill: 38%"></i></span
+              ><span>Memory <i style="--fill: 55%"></i></span
+              ><span>GPU <i style="--fill: 28%"></i></span>
+            </div>
+            <p class="art-caption">Illustrative resource view</p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-number">03 / Policy</span>
+            <h3>Set the terms.</h3>
+            <p>
+              Choose the resources a workload needs, who may borrow them and
+              what happens to admitted work when policy changes. Pause lending
+              from the owner console.
+            </p>
+            <a href="https://docs.vacancyd.com/admission/"
+              >Read the admission rules <span aria-hidden="true">↗</span></a
+            >
+            <div class="policy-art" aria-hidden="true">
+              <span>Presence</span><b>+</b><span>Capacity</span><b>+</b
+              ><span>Your policy</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section console-section" aria-labelledby="console-title">
+        <div class="wrap">
+          <div class="section-heading reveal">
+            <p class="eyebrow">The owner console</p>
+            <h2 id="console-title">A clear view.<br />And a pause button.</h2>
+            <p>
+              See what is lending, what is withholding and why. Inspect workload
+              decisions, adjust supported settings and export diagnostics when
+              you need a closer look.
+            </p>
+          </div>
+          <div class="console-detail reveal">
+            <img
+              src="/assets/console-workloads.jpg"
+              alt="The Vacancyd Workloads view with example routes, resource requirements and owner-policy information."
+              width="1440"
+              height="760"
+              loading="lazy"
+            />
+          </div>
+          <a class="text-link" href="https://docs.vacancyd.com/console/"
+            >Explore the console <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+
+      <section
+        id="platforms"
+        class="section wrap"
+        aria-labelledby="platform-title"
+      >
+        <div class="section-heading reveal">
+          <p class="eyebrow">Choose your machine</p>
+          <h2 id="platform-title">At the desk.<br />Or in the rack.</h2>
+        </div>
+        <div class="platform-grid">
+          <article class="platform-card reveal">
+            <span class="platform-icon" aria-hidden="true">⊞</span>
+            <h3>Windows</h3>
+            <p>
+              A signed installer, background service and owner console, with a
+              session agent that keeps desktop presence attached to the right
+              user.
+            </p>
+            <a href="https://docs.vacancyd.com/windows-service/"
+              >Windows guide <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article class="platform-card reveal">
+            <span class="platform-icon terminal-icon" aria-hidden="true"
+              >&gt;_</span
+            >
+            <h3>Linux</h3>
+            <p>
+              A release archive and systemd service, with local administration
+              and a logind presence backend for machines with a desktop.
+            </p>
+            <a href="https://docs.vacancyd.com/setup/"
+              >Linux guide <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article class="platform-card reveal">
+            <span class="platform-icon" aria-hidden="true">▧</span>
+            <h3>Containers</h3>
+            <p>
+              For a dedicated host: the same Linux release binary, packaged as
+              an unprivileged container. Configure headless policy when nobody
+              sits at it.
+            </p>
+            <a href="https://docs.vacancyd.com/container/"
+              >Container guide <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+        <p class="platform-note">
+          Check the
+          <a href="https://docs.vacancyd.com/#platform-support"
+            >platform support table</a
+          >
+          before enabling lending. ARM64 is preview. macOS is not supported in
+          version 1.0.
+        </p>
+      </section>
+
+      <section
+        id="get-vacancyd"
+        class="section download-section"
+        aria-labelledby="download-title"
+      >
+        <div class="wrap reveal">
+          <img
+            src="/assets/mark-lit.svg"
+            class="download-mark"
+            alt=""
+            width="72"
+            height="72"
+          />
+          <p class="eyebrow">Vacancyd</p>
+          <h2 id="download-title">Make room.<br />Keep your place.</h2>
+          <p id="release-status">
+            The source is available now. Version 1.0 is being prepared for
+            release.
+          </p>
+          <div id="release-downloads" class="download-links" hidden></div>
+          <div class="download-actions">
+            <a
+              class="button"
+              href="https://github.com/maxfield-allison/vacancyd"
+              data-umami-event="view-source"
+              >View source <span aria-hidden="true">↗</span></a
+            ><a
+              class="text-link"
+              href="https://docs.vacancyd.com/"
+              data-umami-event="open-docs"
+              >Read the guides <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p class="download-license">
+            Open source under Apache-2.0.<br />Built for a trusted network. Keep
+            your inference servers behind it.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer class="footer wrap">
+      <a class="wordmark" href="/"
+        >vacancyd<span class="wordmark-dot">.</span></a
+      >
+      <p>Copyright 2026 Maxfield Allison</p>
+      <nav aria-label="Footer">
+        <a href="https://docs.vacancyd.com/">Documentation</a
+        ><a href="https://github.com/maxfield-allison/vacancyd">GitHub</a
+        ><a href="/privacy/">Privacy</a
+        ><a
+          href="https://github.com/maxfield-allison/vacancyd/blob/main/LICENSE-APACHE"
+          >Apache-2.0</a
+        >
+      </nav>
+    </footer>
+  </body>
+</html>

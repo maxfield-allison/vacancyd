@@ -1,0 +1,6 @@
+{
+  "identifier": "status-read",
+  "description": "Read bounded status from the fixed local daemon endpoint.",
+  "windows": ["main"],
+  "permissions": ["allow-read-status"]
+}

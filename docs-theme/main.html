@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block extrahead %}
+  {{ super() }}
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Vacancyd documentation">
+  <meta property="og:title" content="{{ page.title | e }} — Vacancyd">
+  <meta property="og:description" content="{% if page.meta and page.meta.description %}{{ page.meta.description | e }}{% else %}{{ config.site_description | e }}{% endif %}">
+  <meta property="og:url" content="{{ page.canonical_url | e }}">
+  <meta property="og:image" content="https://vacancyd.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://vacancyd.com/assets/social-card.png">
+{% endblock %}

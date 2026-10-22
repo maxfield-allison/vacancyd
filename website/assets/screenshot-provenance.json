@@ -1,0 +1,20 @@
+{
+  "renderer": "Vacancyd owner console frontend",
+  "version": "1.0.0",
+  "data": "Synthetic lending fixture; not measurements from a user machine",
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1440,
+    "height": 760
+  },
+  "images": [
+    {
+      "name": "console-overview.jpg",
+      "sha256": "2481765e73bf44e1c61b74f01ca19feca79099b50ba3b80ba45f3e140f1eec80"
+    },
+    {
+      "name": "console-workloads.jpg",
+      "sha256": "82c5c406e826f60e7a603dcb30e3c0fc84a65f7e20403d95a623e77a27d616d4"
+    }
+  ]
+}

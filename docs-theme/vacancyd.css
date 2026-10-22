@@ -1,0 +1,54 @@
+@font-face {
+  font-family: Archivo;
+  src: url("../assets/fonts/Archivo.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../assets/fonts/IBMPlexMono.ttf") format("truetype");
+  font-weight: 100 700;
+  font-display: swap;
+}
+:root {
+  --md-text-font: Archivo, system-ui, sans-serif;
+  --md-code-font: "IBM Plex Mono", ui-monospace, monospace;
+}
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0b0f17;
+  --md-default-fg-color: #ffffff;
+  --md-primary-fg-color: #151b27;
+  --md-primary-bg-color: #ffffff;
+  --md-accent-fg-color: #ffb454;
+  --md-typeset-a-color: #ffb454;
+  --md-code-bg-color: #151b27;
+}
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #151b27;
+  --md-primary-bg-color: #ffffff;
+  --md-accent-fg-color: #a85f06;
+  --md-typeset-a-color: #a85f06;
+}
+.md-header__button.md-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.md-typeset h1,
+.md-typeset h2 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.md-typeset a:focus-visible,
+.md-header__button:focus-visible {
+  outline: 3px solid var(--md-typeset-a-color);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

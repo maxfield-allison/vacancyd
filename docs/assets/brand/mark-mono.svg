@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="vacancyd">
+  <title>vacancyd</title>
+  <g id="rail" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+    <path d="M6 6h52"/>
+    <path d="M16 7v6M48 7v6"/>
+  </g>
+  <rect x="8" y="14" width="48" height="42" rx="7" fill="none"
+        stroke="currentColor" stroke-width="4"/>
+  <path d="M22 26 32 44 42 26" fill="none" stroke="currentColor" stroke-width="6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

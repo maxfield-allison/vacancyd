@@ -1,0 +1,11 @@
+{
+  "identifier": "diagnostics",
+  "description": "Switch a temporary debug logging window and save the diagnostics export of the fixed local daemon.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "allow-set-debug-logging",
+    "allow-export-diagnostics"
+  ]
+}

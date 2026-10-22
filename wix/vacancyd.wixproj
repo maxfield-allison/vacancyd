@@ -1,0 +1,25 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <Platform>x64</Platform>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+    <BinaryPath Condition="'$(BinaryPath)' == ''">$(MSBuildProjectDirectory)\..\target\release\vacancyd.exe</BinaryPath>
+    <SessionBinaryPath Condition="'$(SessionBinaryPath)' == ''">$([System.IO.Path]::GetDirectoryName('$(BinaryPath)'))\vacancyd-session.exe</SessionBinaryPath>
+    <ConsoleBinaryPath Condition="'$(ConsoleBinaryPath)' == ''">$([System.IO.Path]::GetDirectoryName('$(BinaryPath)'))\vacancyd-console.exe</ConsoleBinaryPath>
+    <!-- ICE validation needs the Windows Installer service and is run explicitly
+         after the build so restricted developer shells can still create an MSI. -->
+    <SuppressValidation>true</SuppressValidation>
+    <OutputName>vacancyd-$(PackageVersion)-x86_64-pc-windows-msvc</OutputName>
+    <DefineConstants>PackageVersion=$(PackageVersion);BinaryPath=$(BinaryPath);SessionBinaryPath=$(SessionBinaryPath);ConsoleBinaryPath=$(ConsoleBinaryPath);RepositoryRoot=$(MSBuildProjectDirectory)\..</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Util.wixext" Version="6.0.2" />
+  </ItemGroup>
+
+  <Target Name="VerifyPayload" BeforeTargets="Build">
+    <Error Condition="!Exists('$(BinaryPath)')" Text="vacancyd binary not found at $(BinaryPath); build it with cargo build --release first." />
+    <Error Condition="!Exists('$(SessionBinaryPath)')" Text="Session agent missing; build with cargo build --release --features windows-session first." />
+    <Error Condition="!Exists('$(ConsoleBinaryPath)')" Text="Owner console missing; build its frontend and cargo build --release -p vacancyd-console first." />
+  </Target>
+</Project>

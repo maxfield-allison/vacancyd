@@ -1,0 +1,15 @@
+{
+  "name": "vacancyd-console-ui",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build": "node generate-settings.mjs && tsc && node build.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@playwright/test": "1.63.0"
+  }
+}

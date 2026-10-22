@@ -1,0 +1,107 @@
+{
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "owner": {
+    "unlocked_session_is_presence": true,
+    "idle_lends_after_s": 900,
+    "media_is_presence": true,
+    "release_after_s": 120,
+    "processes": [
+      "game.exe"
+    ],
+    "media_ignore": [
+      "wallpaper"
+    ],
+    "sign_in_screen_is_presence": false,
+    "gpu_pressure": {
+      "enabled": true,
+      "mode": "calibrated",
+      "threshold_pct": 0.0,
+      "sustain_s": 15,
+      "ignore": [
+        "dwm"
+      ],
+      "cap_pct": 70.0,
+      "margin_pct": 15.0,
+      "floor_pct": 5.0,
+      "learn_quantile": 0.9,
+      "learn_half_life_h": 48.0,
+      "raise_pct_per_h": 2.0,
+      "warmup_samples": 12,
+      "poll_ms": 5000
+    },
+    "presence": "auto",
+    "media_poll_ms": 5000
+  },
+  "resources": [
+    {
+      "id": "gpu0",
+      "kind": "nvidia-gpu",
+      "enabled": true,
+      "reserve": null,
+      "selector": null,
+      "adapter": null
+    },
+    {
+      "id": "memory",
+      "kind": "system-memory",
+      "enabled": true,
+      "reserve": null,
+      "selector": null,
+      "adapter": null
+    }
+  ],
+  "upstreams": [
+    {
+      "id": "ollama",
+      "kind": "ollama",
+      "yield_on_veto": true,
+      "on_owner_return": "drain",
+      "drain_timeout_s": 30,
+      "owner_scope": "host",
+      "management": "deny",
+      "completion_timeout_s": 3600,
+      "forward_authorization": false,
+      "listen": "127.0.0.1:11435",
+      "target": "http://127.0.0.1:11434",
+      "resource": "gpu0",
+      "also_requires": [],
+      "default_min_free_mib": "8000",
+      "models": [
+        {
+          "name": "gemma3:12b",
+          "mode": "scalar",
+          "min_free_mib": "13000",
+          "resident_min_free_mib": "0",
+          "resources": []
+        }
+      ]
+    }
+  ],
+  "poll_interval_ms": 3000,
+  "server_listen": "127.0.0.1:9811",
+  "server_limits": {
+    "header_read_timeout_s": 30,
+    "body_read_timeout_s": 120,
+    "body_idle_timeout_s": 15,
+    "write_stall_timeout_s": 60,
+    "max_connections": 128,
+    "max_request_body_mib": 64,
+    "max_buffered_body_mib": null,
+    "tunnel_idle_timeout_s": 3600
+  },
+  "application": {
+    "capacity_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "restart_required": true
+  },
+  "capabilities": {
+    "auth_tokens_configured": 0,
+    "upstream_credentials_configured": 0,
+    "trust_loopback": true,
+    "allow_unauthenticated_remote": false,
+    "local_admin_channel": "windows-account",
+    "local_admin_group_configured": false,
+    "custom_admission_storage": false,
+    "custom_pressure_cache": false,
+    "custom_admin_socket": false
+  }
+}

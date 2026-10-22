@@ -1,0 +1,11 @@
+{
+  "identifier": "settings",
+  "description": "Read and save the whitelisted lending policy through the fixed local daemon.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "allow-read-settings",
+    "allow-save-settings"
+  ]
+}

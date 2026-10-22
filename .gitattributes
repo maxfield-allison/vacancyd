@@ -1,0 +1,12 @@
+* text=auto
+*.rs text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+# The console frontend and the brand marks it copies are embedded in the Windows
+# console, which is built on Windows but tested on Linux; LF on every platform
+# keeps those bytes identical.
+console/web/** text eol=lf
+docs/assets/brand/*.svg text eol=lf
+# Vendored upstream artifacts are checked against their original SHA-256 bytes.
+console/web/assets/fonts/* -text
+vendor/** -text
