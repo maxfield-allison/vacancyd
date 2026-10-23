@@ -6,7 +6,7 @@
 
 [App website](https://vacancyd.com/) · [Documentation](https://docs.vacancyd.com/) · [Setup guide](docs/setup.md) · [Release verification](docs/releasing.md) · [Security](SECURITY.md)
 
-> **Release status:** source is available. Signed version 1.0.0 downloads and container images are being prepared; a source tag alone isn't a published binary release.
+> **Release status:** [Signed 1.0.0 downloads](https://github.com/maxfield-allison/vacancyd/releases/tag/v1.0.0) are available for Windows and Linux; Linux ARM64 remains a preview. Container images are on [Docker Hub](https://hub.docker.com/r/probablyfinedev/vacancyd) and [GHCR](https://github.com/users/maxfield-allison/packages/container/package/vacancyd), with signed provenance and platform SBOMs. See [release verification](docs/releasing.md) to check your download.
 
 Your workstation may be one of the most powerful computers in your homelab. It might have the best GPU you own. It's also the machine you use for games and everyday work, and for a good chunk of the day, much of that capacity sits unused.
 
