@@ -12,7 +12,13 @@ for (const width of [1440, 390, 320]) {
       "Spare compute.On your terms.",
     );
     await expect(page.locator("#release-status")).toContainText(
-      "being prepared",
+      "Signed downloads are available",
+    );
+    await expect(
+      page.getByRole("link", { name: "releases page", exact: true }),
+    ).toHaveAttribute(
+      "href",
+      "https://github.com/maxfield-allison/vacancyd/releases/latest",
     );
     await expect(page.locator("#release-downloads")).toBeHidden();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -82,7 +88,13 @@ test("all core product content remains available without JavaScript", async ({
     ).toBeVisible();
     await expect(page.getByRole("link", { name: "View source" })).toBeVisible();
     await expect(page.locator("#release-status")).toContainText(
-      "being prepared",
+      "Signed downloads are available",
+    );
+    await expect(
+      page.getByRole("link", { name: "releases page", exact: true }),
+    ).toHaveAttribute(
+      "href",
+      "https://github.com/maxfield-allison/vacancyd/releases/latest",
     );
   } finally {
     await context.close();
