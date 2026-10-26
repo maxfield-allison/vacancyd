@@ -7,6 +7,12 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:38111",
     reducedMotion: "reduce",
     trace: "retain-on-failure",
+    launchOptions: process.env.CHROMIUM_PATH
+      ? {
+          executablePath: process.env.CHROMIUM_PATH,
+          args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"],
+        }
+      : undefined,
   },
   webServer: [
     {

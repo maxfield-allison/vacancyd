@@ -843,7 +843,7 @@ button {
     width: 26px;
     height: 26px;
   }
-  .nav-links > a:not(:last-child) {
+  .nav-links > a:not([href="/pricing/"]) {
     display: none;
   }
   .nav-links {

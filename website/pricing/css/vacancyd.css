@@ -1,0 +1,47 @@
+/* vacancyd: the product's dark slate with warm amber, Archivo and Plex Mono. */
+@font-face {
+  font-family: Archivo;
+  src: url("../fonts/Archivo.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../fonts/IBMPlexMono.ttf") format("truetype");
+  font-weight: 100 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0b0f17;
+  --surface: #151b27;
+  --surface-strong: #1a2232;
+  --ink: #f4f1ea;
+  --ink-soft: #aab3c5;
+  --line: #273046;
+  --accent: #ffb454;
+  --on-accent: #1c1306;
+  --link: #ffc777;
+  --focus: #ffd08a;
+  --price: #ffb454;
+  --font-body: Archivo, system-ui, sans-serif;
+  --font-display: Archivo, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --stage-bg: #05070d;
+  --stage-shadow: 0 30px 80px -40px rgba(255, 180, 84, 0.35), 0 0 0 1px #1d2536;
+  --control-bg: #151b27;
+  --control-border: #2c3650;
+  --ribbon-bg: #1a2232;
+  --vignette: rgba(0, 0, 0, 0.5);
+  --ribbon-ink: #c8cfdd;
+}
+
+.hero h1 {
+  font-weight: 800;
+}
+
+.plan .price {
+  text-shadow: 0 0 18px rgba(255, 180, 84, 0.35);
+}

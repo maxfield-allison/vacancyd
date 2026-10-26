@@ -87,6 +87,14 @@ def main() -> None:
         )
         target.write_text(contents)
     shutil.copytree(ROOT / "website" / "assets", OUTPUT / "assets")
+    for directory in ("pricing", "rivet"):
+        shutil.copytree(ROOT / "website" / directory, OUTPUT / directory)
+    pricing = OUTPUT / "pricing" / "index.html"
+    pricing.write_text(
+        pricing.read_text().replace(
+            "<!-- ANALYTICS -->", tracker_tag(identifier, "vacancyd.com")
+        )
+    )
     for name in ["mark-lit.svg", "mark-mono.svg"]:
         shutil.copyfile(
             ROOT / "docs" / "assets" / "brand" / name, OUTPUT / "assets" / name
@@ -99,7 +107,7 @@ def main() -> None:
         "User-agent: *\nAllow: /\nSitemap: https://vacancyd.com/sitemap.xml\n"
     )
     (OUTPUT / "sitemap.xml").write_text(
-        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://vacancyd.com/</loc></url><url><loc>https://vacancyd.com/privacy/</loc></url></urlset>\n'
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://vacancyd.com/</loc></url><url><loc>https://vacancyd.com/pricing/</loc></url><url><loc>https://vacancyd.com/privacy/</loc></url></urlset>\n'
     )
     (OUTPUT / "_headers").write_text(
         "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  X-Frame-Options: DENY\n"
