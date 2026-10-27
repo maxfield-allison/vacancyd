@@ -25,10 +25,10 @@ class SiteBuildTests(unittest.TestCase):
             )
             document = page.read_text()
             for value in (
-                'data-domains="docs.vacancyd.com"',
-                'data-do-not-track="true"',
-                'data-exclude-search="true"',
-                'data-exclude-hash="true"',
+                'data-docs-host="docs.vacancyd.com"',
+                'data-surface="docs"',
+                'data-product="vacancyd"',
+                "data-utm-values=",
             ):
                 self.assertIn(value, document)
             with self.assertRaisesRegex(ValueError, "Unexpected analytics"):
@@ -50,10 +50,13 @@ class SiteBuildTests(unittest.TestCase):
             )
 
     def test_transient_release_failure_does_not_claim_no_release(self):
-        with patch(
-            "urllib.request.urlopen",
-            side_effect=urllib.error.HTTPError("url", 503, "unavailable", {}, None),
-        ), self.assertRaises(urllib.error.HTTPError):
+        with (
+            patch(
+                "urllib.request.urlopen",
+                side_effect=urllib.error.HTTPError("url", 503, "unavailable", {}, None),
+            ),
+            self.assertRaises(urllib.error.HTTPError),
+        ):
             build_website.release_info(False)
 
     def test_incomplete_releases_fail_before_publishing_downloads(self):

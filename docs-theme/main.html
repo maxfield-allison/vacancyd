@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block extrahead %}
   {{ super() }}
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Vacancyd documentation">
   <meta property="og:title" content="{{ page.title | e }} — Vacancyd">
