@@ -78,6 +78,8 @@ def main() -> None:
         "README.md": "index.md",
         "SECURITY.md": "security.md",
         "CHANGELOG.md": "changelog.md",
+        # Website policy is staged for online docs, not bundled in native installers.
+        "website/privacy.md": "privacy.md",
     }
     sources.update(
         {
