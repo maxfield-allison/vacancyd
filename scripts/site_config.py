@@ -1,11 +1,11 @@
 """Public website configuration; no authentication credentials belong here."""
 
-from pathlib import Path
+import html
 import json
 import uuid
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TRACKER = "https://probablyfine.dev/pf-insights/script.js"
 
 
 def analytics_id(site: str, preview: bool) -> str:
@@ -25,8 +25,22 @@ def analytics_id(site: str, preview: bool) -> str:
 def tracker_tag(identifier: str, domain: str) -> str:
     if not identifier:
         return ""
-    return (
-        f'<script defer src="{TRACKER}" data-website-id="{identifier}" '
-        f'data-domains="{domain}" data-do-not-track="true" '
-        'data-exclude-search="true" data-exclude-hash="true"></script>'
+    if domain not in ("vacancyd.com", "docs.vacancyd.com"):
+        raise ValueError("Unexpected product hostname")
+    values = json.loads((ROOT / "website" / "analytics.json").read_text())[
+        "campaign_values"
+    ]
+    attributes = {
+        "src": "/assets/javascripts/analytics.js",
+        "data-product": "vacancyd",
+        "data-website-id": identifier,
+        "data-app-host": "vacancyd.com",
+        "data-docs-host": "docs.vacancyd.com",
+        "data-docs-prefix": "/",
+        "data-surface": "docs" if domain == "docs.vacancyd.com" else "site",
+        "data-utm-values": json.dumps(values, separators=(",", ":")),
+    }
+    rendered = " ".join(
+        f'{key}="{html.escape(value, quote=True)}"' for key, value in attributes.items()
     )
+    return f"<script defer {rendered}></script>"

@@ -87,6 +87,11 @@ def main() -> None:
         )
         target.write_text(contents)
     shutil.copytree(ROOT / "website" / "assets", OUTPUT / "assets")
+    (OUTPUT / "assets" / "javascripts").mkdir(exist_ok=True)
+    shutil.copyfile(
+        ROOT / "website" / "analytics.js",
+        OUTPUT / "assets" / "javascripts" / "analytics.js",
+    )
     for directory in ("pricing", "rivet"):
         shutil.copytree(ROOT / "website" / directory, OUTPUT / directory)
     pricing = OUTPUT / "pricing" / "index.html"

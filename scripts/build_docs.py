@@ -16,6 +16,9 @@ def add_analytics(directory: Path, identifier: str) -> None:
     tag = tracker_tag(identifier, "docs.vacancyd.com")
     if not tag:
         return
+    assets = directory / "assets" / "javascripts"
+    assets.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / "website" / "analytics.js", assets / "analytics.js")
     for path in directory.rglob("*.html"):
         document = path.read_text(encoding="utf-8")
         if document.count("</head>") != 1 or "data-website-id=" in document:

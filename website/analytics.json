@@ -1,4 +1,10 @@
 {
   "app": "4692bc8a-de90-48d4-a907-1cf738808393",
-  "docs": "658e03cc-139a-4752-b140-01cfbf667f76"
+  "docs": "4692bc8a-de90-48d4-a907-1cf738808393",
+  "campaign_values": {
+    "utm_source": ["bluesky", "facebook", "linkedin", "reddit", "threads", "viva", "instagram", "hackernews", "github", "probablyfine", "newsletter"],
+    "utm_medium": ["social", "referral", "email"],
+    "utm_campaign": ["vacancyd-launch"],
+    "utm_content": ["launch", "megathread", "policy", "sample", "article", "followup", "story", "readme"]
+  }
 }

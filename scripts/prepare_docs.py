@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import posixpath
 import re
 import shutil
+from pathlib import Path
 from urllib.parse import unquote, urlsplit, urlunsplit
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,6 +40,7 @@ DESCRIPTIONS = {
     "security.md": "Report a vacancyd vulnerability privately and understand the supported security-reporting process.",
     "changelog.md": "Read the changes and release history for vacancyd.",
     "brand.md": "The vacancyd vacancy-sign identity: amber and slate states, typography, marks and product language.",
+    "privacy.md": "What the Vacancyd website and documentation measure, how browser controls work and where links lead.",
 }
 
 
