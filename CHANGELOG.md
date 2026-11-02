@@ -43,4 +43,4 @@ First public release. vacancyd gates borrowed AI requests on owner policy and sa
 - Linux lacks Windows media/foreground detection and attributed GPU pressure. ARM64 is a build/package-verified preview without a physical-runtime support claim. macOS is unsupported and has no release package.
 - Windows Home acceptance covers one local interactive session. RDP reconnect and simultaneous active sessions require separate Windows Server evidence.
 - Container logind integration is qualified on the documented dbus-daemon/AppArmor hosts. Rootless engines, user-namespace remapping, dbus-broker and SELinux hosts remain unqualified.
-- Real NVIDIA behavior and the final signed candidate require their own native evidence. No latency, savings, adoption or universal owner-priority guarantee is made.
+- Release testing for 1.0.0 did not include physical GPU hardware. NVIDIA admission, pressure attribution and reclaim are covered by automated tests, so behavior with a particular GPU, driver or workload is not certified. No latency, savings, adoption or universal owner-priority guarantee is made.
