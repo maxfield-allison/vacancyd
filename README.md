@@ -83,7 +83,7 @@ flowchart LR
 
 ### Windows
 
-Once the signed release is available, download its x86-64 MSI from the project's Releases page and double-click it. The installer adds vacancyd as a native automatic Windows service, so no service wrapper or Rust installation is required. Its deliberately inert starter configuration is written to:
+Download the x86-64 MSI from the [v1.0.0 release](https://github.com/maxfield-allison/vacancyd/releases/tag/v1.0.0) and double-click it. The installer adds vacancyd as a native automatic Windows service, so no service wrapper or Rust installation is required. Its deliberately inert starter configuration is written to:
 
 ```text
 C:\ProgramData\vacancyd\vacancyd.toml
@@ -102,11 +102,11 @@ Advanced configurations still use `vacancyd.example.toml` and `vacancyd check-co
 
 ### Linux
 
-Once the release is available, download its archive for `x86_64-unknown-linux-gnu`, verify the adjacent SHA-256 sidecar, and follow [Linux: install from the release archive](docs/setup.md#linux-install-from-the-release-archive): install the binary, turn `vacancyd.example.toml` into your configuration, validate it with `vacancyd check-config`, then install [`contrib/vacancyd.service`](contrib/vacancyd.service). An `aarch64-unknown-linux-gnu` archive is also published as a preview: its build and package contents are checked, but v1.0.0 does not claim runtime qualification on physical ARM64 hardware. Linux’s default systemd-logind presence backend treats an unlocked local or graphical session as occupied, and locked or SSH-only sessions as unattended. Resource checks and route policy still decide admission. Attributed GPU pressure is not implemented on Linux yet. See the platform table below before enabling lending. Local changes other than pausing go through `vacancyd admin-request` as root or a member of the `vacancyd-admin` group; see [local administration on Linux](docs/authentication.md#local-administration-on-linux).
+Download the `x86_64-unknown-linux-gnu` archive from the [v1.0.0 release](https://github.com/maxfield-allison/vacancyd/releases/tag/v1.0.0), verify the adjacent SHA-256 sidecar, and follow [Linux: install from the release archive](docs/setup.md#linux-install-from-the-release-archive): install the binary, turn `vacancyd.example.toml` into your configuration, validate it with `vacancyd check-config`, then install [`contrib/vacancyd.service`](contrib/vacancyd.service). An `aarch64-unknown-linux-gnu` archive is also published as a preview: its build and package contents are checked, but v1.0.0 does not claim runtime qualification on physical ARM64 hardware. Linux’s default systemd-logind presence backend treats an unlocked local or graphical session as occupied, and locked or SSH-only sessions as unattended. Resource checks and route policy still decide admission. Attributed GPU pressure is not implemented on Linux yet. See the platform table below before enabling lending. Local changes other than pausing go through `vacancyd admin-request` as root or a member of the `vacancyd-admin` group; see [local administration on Linux](docs/authentication.md#local-administration-on-linux).
 
 ### Container
 
-The release images are intended for a Linux machine nobody sits at, such as a dedicated GPU box whose inference servers already run in containers. These pull commands become available when the images are published:
+The release images are intended for a Linux machine nobody sits at, such as a dedicated GPU box whose inference servers already run in containers. Docker Hub and GHCR serve the same signed images:
 
 ```sh
 docker pull docker.io/probablyfinedev/vacancyd:latest
@@ -117,9 +117,10 @@ The image holds the binary from the Linux release archive, runs as an unprivileg
 
 ### Verifying a download
 
-Every release publishes a `SHA256SUMS` file covering all of its files, signed with the project's release key ([`packaging/cosign.pub`](packaging/cosign.pub)). With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/):
+Every release publishes a `SHA256SUMS` file covering all of its files, signed with the project's release key ([`packaging/cosign.pub`](packaging/cosign.pub)). With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) installed, fetch the key from the release tag, then check the signature and your files:
 
 ```sh
+curl -fsSLO https://raw.githubusercontent.com/maxfield-allison/vacancyd/v1.0.0/packaging/cosign.pub
 cosign verify-blob --key cosign.pub --bundle SHA256SUMS.sigstore.json SHA256SUMS
 sha256sum --check --ignore-missing SHA256SUMS
 ```

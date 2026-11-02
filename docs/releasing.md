@@ -41,9 +41,10 @@ The unmodified MPL-2.0 dependency sources are bundled as their exact locked `.cr
 
 ## Verifying a release
 
-Download the files you want together with `SHA256SUMS` and `SHA256SUMS.sigstore.json` from the release page. The release key's public half is [`packaging/cosign.pub`](../packaging/cosign.pub). With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) installed:
+Download the files you want together with `SHA256SUMS` and `SHA256SUMS.sigstore.json` from the release page. The release key's public half is [`packaging/cosign.pub`](../packaging/cosign.pub). With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) installed, fetch the key from the release's tag (v1.0.0 here), then check:
 
 ```sh
+curl -fsSLO https://raw.githubusercontent.com/maxfield-allison/vacancyd/v1.0.0/packaging/cosign.pub
 cosign verify-blob --key cosign.pub --bundle SHA256SUMS.sigstore.json SHA256SUMS
 sha256sum --check --ignore-missing SHA256SUMS
 ```

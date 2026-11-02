@@ -189,9 +189,10 @@ Releases are built by the maintainer's private release pipeline from the tagged 
 
 ## Checking an image
 
-The release key's public half is [`packaging/cosign.pub`](../packaging/cosign.pub) in the repository. With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) installed:
+The release key's public half is [`packaging/cosign.pub`](../packaging/cosign.pub) in the repository. With [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) installed, fetch the key from the release's tag, then check:
 
 ```sh
+curl -fsSLO https://raw.githubusercontent.com/maxfield-allison/vacancyd/vX.Y.Z/packaging/cosign.pub
 cosign verify --key cosign.pub docker.io/probablyfinedev/vacancyd:vX.Y.Z
 cosign verify-attestation --key cosign.pub --type slsaprovenance1 \
   docker.io/probablyfinedev/vacancyd:vX.Y.Z
