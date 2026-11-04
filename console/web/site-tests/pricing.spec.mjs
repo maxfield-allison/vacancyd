@@ -22,7 +22,7 @@ for (const width of [1280, 390, 320]) {
     expect(await page.locator(".plan .price").allTextContents()).toEqual(["$0 per night", "$0 per night", "$0 per night"]);
     await expect(page.getByRole("link", { name: "Get vacancyd", exact: true })).toHaveAttribute("href", "/#get-vacancyd");
     await expect(page.getByRole("link", { name: "Read the docs", exact: true })).toHaveAttribute("href", "https://docs.vacancyd.com/");
-    await expect(page.getByRole("link", { name: "Sponsor on GitHub", exact: true })).toHaveAttribute("href", /github.com\/sponsors\/maxfield-allison\?/);
+    await expect(page.getByRole("link", { name: "Sponsor on GitHub", exact: true })).toHaveAttribute("href", "https://github.com/sponsors/maxfield-allison?metadata_campaign=vacancyd-pricing");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(await page.evaluate(() => window.rivetStage.state().mode)).toBe("still");
     await page.locator("[data-stage]").screenshot({ path: `test-results/pricing-${width}.png` });
@@ -76,7 +76,7 @@ test("without JavaScript the poster, free prices and live links remain", async (
     await page.goto("http://127.0.0.1:38111/pricing/");
     await expect(page.locator(".stage__poster img")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Every room is free." })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Sponsor on GitHub" })).toHaveAttribute("href", /github.com\/sponsors\/maxfield-allison/);
+    await expect(page.getByRole("link", { name: "Sponsor on GitHub" })).toHaveAttribute("href", "https://github.com/sponsors/maxfield-allison?metadata_campaign=vacancyd-pricing");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   } finally {
     await context.close();

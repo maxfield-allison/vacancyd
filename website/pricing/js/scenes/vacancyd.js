@@ -13,7 +13,7 @@
 // World units: the needle pivot is the origin, the gauge face has radius 220.
 
 import { Rivet, DEFAULT_POSE } from "../rivet.js";
-import { TAU, clamp, lerp, ease, track, rng, rgba, smoothstep, noise1, springResponse } from "../ink.js";
+import { TAU, clamp, lerp, ease, track, rng, smoothstep, noise1, springResponse } from "../ink.js";
 import { breathAt, blinkSchedule, idleProgramme, applyDeltas, applyDoze, crestFollower } from "../behavior.js";
 import { loadArt, layerMatrix, coverMatrix, drawPlate, rivetKit } from "../paint.js";
 
